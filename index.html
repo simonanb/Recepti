@@ -1,0 +1,2417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Моја Книга со Рецепти</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:        #FFF8F0;
+      --card-bg:      #FFFDF9;
+      --brown:        #3D2B1F;
+      --brown-mid:    #6B4C3B;
+      --brown-light:  #9A7460;
+      --terra:        #C1603A;
+      --terra-hover:  #A84E2C;
+      --border:       #E8D5C4;
+      --shadow:       rgba(61, 43, 31, 0.10);
+      --shadow-deep:  rgba(61, 43, 31, 0.22);
+      --serif:        'Playfair Display', Georgia, serif;
+      --sans:         'Lato', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--brown);
+      font-family: var(--sans);
+      min-height: 100vh;
+    }
+
+    /* â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    header {
+      background: var(--brown);
+      color: var(--cream);
+      text-align: center;
+      padding: 3rem 1.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(193,96,58,.25) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .header-ornament {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 0.6rem;
+      opacity: 0.9;
+    }
+
+    header h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .header-divider::before,
+    .header-divider::after {
+      content: '';
+      display: block;
+      width: 3rem;
+      height: 1px;
+      background: var(--terra);
+      opacity: 0.6;
+    }
+
+    .header-divider span {
+      color: var(--terra);
+      font-size: 1rem;
+    }
+
+    header p {
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    /* â”€â”€ CONTROLS (sticky) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .controls {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px var(--shadow);
+    }
+
+    .controls-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    @media (min-width: 640px) {
+      .controls-inner {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.25rem;
+      }
+    }
+
+    /* Search */
+    .search-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 640px) {
+      .search-wrap { width: 260px; }
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--brown-light);
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      padding: 0.625rem 1rem 0.625rem 2.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--cream);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: var(--brown);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #search:focus {
+      border-color: var(--terra);
+      box-shadow: 0 0 0 3px rgba(193,96,58,.12);
+    }
+
+    #search::placeholder { color: var(--brown-light); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .tab-btn {
+      padding: 0.45rem 1.1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--brown-mid);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--terra);
+      color: var(--terra);
+    }
+
+    .tab-btn.active {
+      background: var(--terra);
+      border-color: var(--terra);
+      color: #fff;
+    }
+
+    /* â”€â”€ MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    .results-meta {
+      font-size: 0.82rem;
+      color: var(--brown-light);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      min-height: 1.2em;
+    }
+
+    /* â”€â”€ GRID â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* â”€â”€ CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s;
+      box-shadow: 0 2px 10px var(--shadow);
+      animation: cardIn 0.35s ease both;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px var(--shadow-deep);
+      border-color: #D4B89A;
+    }
+
+    .card:focus-visible {
+      outline: 2px solid var(--terra);
+      outline-offset: 3px;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .card-badges {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.875rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.18rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* Category badge colours */
+    .badge-cat-breakfast { background: #FFF0C2; color: #7A5500; }
+    .badge-cat-lunch     { background: #D6F0DC; color: #1B5E30; }
+    .badge-cat-dinner    { background: #EAD8CB; color: #5C2A10; }
+    .badge-cat-desserts  { background: #FAD9DC; color: #7B1D28; }
+
+    /* Difficulty badge colours */
+    .badge-diff-easy   { background: #D6F0DC; color: #1B5E30; }
+    .badge-diff-medium { background: #FFF0C2; color: #7A5500; }
+    .badge-diff-hard   { background: #FAD9DC; color: #7B1D28; }
+
+    .card-title {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--brown);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.855rem;
+      color: var(--brown-mid);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding-top: 0.875rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--brown-light);
+    }
+
+    /* â”€â”€ EMPTY STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    .empty h3 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--brown-mid);
+      margin-bottom: 0.4rem;
+    }
+
+    .empty p {
+      font-size: 0.875rem;
+      color: var(--brown-light);
+    }
+
+    /* â”€â”€ MODAL OVERLAY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 18, 10, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* â”€â”€ MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .modal {
+      background: var(--card-bg);
+      border-radius: 18px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      position: relative;
+      transform: scale(0.94) translateY(14px);
+      transition: transform 0.28s cubic-bezier(0.34, 1.36, 0.64, 1);
+      box-shadow: 0 28px 72px rgba(30,18,10,.35);
+    }
+
+    .overlay.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal::-webkit-scrollbar        { width: 5px; }
+    .modal::-webkit-scrollbar-track  { background: transparent; }
+    .modal::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 99px; }
+
+    /* Modal header â€” sticks while scrolling */
+    .modal-head {
+      padding: 2rem 2rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: 18px 18px 0 0;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.1rem;
+      right: 1.1rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--brown-mid);
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover  { background: var(--terra); border-color: var(--terra); color: #fff; }
+    .modal-close:focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
+
+    .modal-title {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.875rem;
+      padding-right: 2.5rem;
+    }
+
+    .modal-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-time {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--brown-light);
+      margin-left: 0.15rem;
+    }
+
+    /* Modal body */
+    .modal-body {
+      padding: 1.5rem 2rem 2.5rem;
+    }
+
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--brown-mid);
+      font-style: italic;
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-head {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--terra);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-head::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Ingredients */
+    .ingredients {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 0;
+      margin-bottom: 2rem;
+    }
+
+    .ingredients li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      padding: 0.4rem 0.25rem;
+      border-bottom: 1px dashed var(--border);
+      color: var(--brown);
+    }
+
+    .ingredients li::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--terra);
+      flex-shrink: 0;
+      margin-top: 0.45em;
+    }
+
+    /* Instructions */
+    .instructions {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+
+    .instructions li {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--brown);
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      background: var(--terra);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.15em;
+    }
+
+    /* â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.78rem;
+      color: var(--brown-light);
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+
+    /* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    @media (max-width: 480px) {
+      main { padding: 1.5rem 1rem 4rem; }
+      .modal-head, .modal-body { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .ingredients { grid-template-columns: 1fr; }
+    }
+
+    /* Card image */
+    .card-img {
+      width: calc(100% + 3rem);
+      margin: -1.5rem -1.5rem 1.25rem;
+      height: 190px;
+      object-fit: cover;
+      border-radius: 14px 14px 0 0;
+      display: block;
+    }
+
+    .card-no-img {
+      width: calc(100% + 3rem);
+      margin: -1.5rem -1.5rem 1.25rem;
+      height: 120px;
+      background: linear-gradient(135deg, #F5E6D8 0%, #EDD8C4 100%);
+      border-radius: 14px 14px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      opacity: 0.6;
+    }
+
+    /* Modal hero */
+    .modal-hero {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HEADER -->
+<header>
+  <span class="header-ornament">Лична колекција</span>
+  <h1>Моја Книга со Рецепти</h1>
+  <div class="header-divider"><span>✦</span></div>
+  <p>Омилени јадења, секогаш при рака</p>
+</header>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CONTROLS (sticky) -->
+<nav class="controls" aria-label="Филтрирај рецепти">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="search" id="search" placeholder="Пребарај по назив или состојка…"
+             aria-label="Пребарај рецепти" autocomplete="off" />
+    </div>
+    <div class="tabs" role="tablist" aria-label="Категории на рецепти">
+      <button class="tab-btn active" data-cat="all"       role="tab" aria-selected="true">Сите</button>
+      <button class="tab-btn"        data-cat="breakfast" role="tab" aria-selected="false">Појадок</button>
+      <button class="tab-btn"        data-cat="lunch"     role="tab" aria-selected="false">Ручек</button>
+      <button class="tab-btn"        data-cat="dinner"    role="tab" aria-selected="false">Вечера</button>
+      <button class="tab-btn"        data-cat="desserts"  role="tab" aria-selected="false">Десерти</button>
+    </div>
+  </div>
+</nav>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MAIN -->
+<main>
+  <p class="results-meta" id="results-meta" aria-live="polite"></p>
+  <div class="grid" id="grid" role="list"></div>
+</main>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER -->
+<footer>Уреди го низата <code>recipes</code> во оваа датотека за да додадеш свои рецепти.</footer>
+
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MODAL -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <button class="modal-close" id="modal-close" aria-label="Затвори рецепт">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-meta" id="modal-meta"></div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// RECIPE DATA
+// â”€â”€ Edit this array to add or modify recipes.
+// â”€â”€ Each recipe needs: id, name, category, prepTime, difficulty,
+//    description, ingredients (array), instructions (array).
+// â”€â”€ category must be one of: "breakfast" | "lunch" | "dinner" | "desserts"
+// â”€â”€ difficulty must be one of: "Easy" | "Medium" | "Hard"
+// ================================================================
+const recipes = [
+  {
+    id: 1,
+    name: "HULK ТОСТЕРКИ ИЛИ ПАЛАЧИНКИ",
+    image: "images/HULK_ТОСТЕРКИ_ИЛИ_ПАЛАЧИНКИ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Блендирате сé заедно во блендер или процесор додека добиете убава хомогена смеса.",
+    ingredients: [
+      "100 g спанаќ (или 2 поголеми листа блитва)",
+      "130 g овесни снегулки (една чаша)",
+      "прашок за пециво (малку)",
+      "2 јајца",
+      "2 лажици маслиново масло",
+      "200 ml вода (може и минерална)"
+    ],
+    instructions: [
+      "Блендирате сé заедно во блендер или процесор додека добиете убава хомогена смеса.",
+      "Ако ги правите на тостер прво загрејте го тостерот добро па потоа со лажица ставајте. Доколку ги печете во тава правилото би било исто, загрејте ја добро тавата, а потоа во текот на печењето можете и да намалите.",
+      "Одлични се и за дечињата, нема дете кое не ги сака овие палачинки 😊",
+      "Предлог оброк за појадок или вечера:",
+      "7 палачинки во комбинација со 2-3 лажици грчки јогурт, 1 домат и 1 краставица."
+    ]
+  },
+  {
+    id: 2,
+    name: "БАНАНА ОМЛЕТ",
+    image: "images/БАНАНА_ОМЛЕТ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Со виљушка испасирајте ја бананата, па во неа додадете ги двете јајца и изматете ги заедно.",
+    ingredients: [
+      "2 јајца",
+      "1 банана",
+      "1 лажица семки од тиква (мелени)",
+      "пола лажица маслиново масло",
+      "1 лажица путер од јатки",
+      "црвено овошје (по желба - малини, боровинки)"
+    ],
+    instructions: [
+      "Со виљушка испасирајте ја бананата, па во неа додадете ги двете јајца и изматете ги заедно.",
+      "Во тавче додадете го маслото и кога ќе се загрее истурете ја смесата. Почекајте убаво да се испече од едната страна, па потоа превртете го (ако многу рано пробате да го превртите, ќе ви се распадне).",
+      "На крај ставете го овошјето и одозгора завршете со 1 лажица путер од јатки."
+    ]
+  },
+  {
+    id: 3,
+    name: "ЧОКО-МАФИНИ",
+    image: "images/ЧОКО-МАФИНИ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин бананата испасирајте ја со виљушка. Со миксер изматете ги јајцата и во нив додадете ја бананата, маслиновото масло и медот и убаво соединете повторно со миксерот.",
+    ingredients: [
+      "3 јајца",
+      "1 банана",
+      "3 лажици маслиново масло",
+      "2 лажици мед",
+      "1 мала лажичка какао",
+      "80 g овесни снегулки",
+      "100 g пченично интегрално брашно (може да ставите какво било)",
+      "40 g црно чоколадо (мин. 70 % какао) (рендано или ситно сецкано)",
+      "1 мала лажичка прашок за пециво (не многу полна)"
+    ],
+    instructions: [
+      "Најпрвин бананата испасирајте ја со виљушка. Со миксер изматете ги јајцата и во нив додадете ја бананата, маслиновото масло и медот и убаво соединете повторно со миксерот.",
+      "На крај додадете го брашното, овесните снегулки (може да ги измелете, но не мора) и пецивото. Соединете ја смесата и последно додадете ја чоколадата.",
+      "Доколку смесата е многу густа додадете 1-2 лажици вода, а ако чувствувате дека е ретка, додадете 1-2 лажици брашно или овесни снегулки.",
+      "Поделете ја смесата во соодветни калапи за мафини. Јас користев силиконски, иако можете и со обични, но ставете малку хартија за печење. Печете ги мафините во загреана рерна со вклучен вентилатор на 180С околу 15-20 минути.",
+      "Следете го печењето затоа што секоја рерна е многу различна.",
+      "Можете да ги комбинирате со путер од јатки и свежо овошје.",
+      "2-3 мафини со една лажица путер од јатки по избор и 1 свежа овошка или шака замрзнато црвено овошје може да биде супер појадок и за вас и за вашите деца."
+    ]
+  },
+  {
+    id: 4,
+    name: "МОЈОТ ОМИЛЕН ПОЈАДОК СО ЈАЈЦА",
+    image: "images/МОЈОТ_ОМИЛЕН_ПОЈАДОК_СО_ЈАЈЦА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Овде на платформата имам неколку рецепти и начини како да ги вклопите јајцата во појадок или вечера.",
+    ingredients: [
+      "2 парчиња интегрален леб",
+      "2 јајца",
+      "пола лажица маслиново масло",
+      "1/4 авокадо",
+      "1 лажица грчки јогурт",
+      "сок од лимон (неколку капки)",
+      "пола мала лажичка сенф",
+      "зелена салата (свежа) (по избор)",
+      "сусам (малку за наросување)"
+    ],
+    instructions: [
+      "Овде на платформата имам неколку рецепти и начини како да ги вклопите јајцата во појадок или вечера.",
+      "Овој рецепт е многу сличен на авокадо-јајце сендвичот, но сепак е различен и затоа ви го споделувам.",
+      "Првин на оган во тава ставете капка маслиново масло и почекајте убаво да се загрее, потоа додадете две јајца, но не ги мешајте нека останат цели (на око), кога од едната страна ќе се испечат полека превртете ги.",
+      "Кога ќе бидат готови извадете ги, а во тавата ставете ги парчињата леб и кратко запечете ги од двете страни. Доволно е и малку да се затопли лебот, ќе биде многу поубав.",
+      "На страна измешајте 1/4 авокадо со 1/2 лажичка сенф , 1 лажица грчки јогурт и неколку капки сок од лимон, по потреба може да ставите и малку сол. Со намазот намачкајте ги двете парчиња леб, поделете го намазот по половина на секое парче. Врз намазот ставете ги јајцата, лист марула, спанаќ или рукола (по ваш избор) и наросете со сусам (на сликата јас имам ставено црн сусам).",
+      "Ова ми е дефинитивно најубавиот појадок со јајца, кој е совршено избалансиран и ќе ве држи сити добри 3-4 часа без да имате потреба да грицкате наоколу.",
+      "И да не ве чуди преливот од горе :) за да ми е подекоративно за сликање си ставив малку балсамико крема."
+    ]
+  },
+  {
+    id: 5,
+    name: "ИНТЕГРАЛЕН ЛЕБ СО ХУМУС И ЈАЈЦА",
+    image: "images/ИНТЕГРАЛЕН_ЛЕБ_СО_ХУМУС_И_ЈАЈЦА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Намачкајте две парчиња леб со хумус, подгответе две јајца во тава со капка маслиново масло и потоа ставете ги врз лепчето.",
+    ingredients: [
+      "2 јајца",
+      "2 парчиња интегрален леб",
+      "1/3 лажици маслиново масло",
+      "1 лажица хумус",
+      "1 домат",
+      "1 краставица"
+    ],
+    instructions: [
+      "Намачкајте две парчиња леб со хумус, подгответе две јајца во тава со капка маслиново масло и потоа ставете ги врз лепчето.",
+      "Задолжително искомбинирајте со свеж сезонски зеленчук. Мене ова совршено ми се комбинира со домат и краставица.",
+      "Хумус можете да си направите дома сами, но супер опција е хумусот од Лебот на мама, хумусот од ДМ и хумусот на Green Foods."
+    ]
+  },
+  {
+    id: 6,
+    name: "ПОЈАДОК ЗА ПОМАЛКУ ОД 3 МИНУТИ",
+    image: "images/ПОЈАДОК_ЗА_ПОМАЛКУ_ОД_3_МИНУТИ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Намачкајте го cottage cheese-от на лепчето, одозгора ставете го овошјето, па путерот и завршетe со малку мед.",
+    ingredients: [
+      "2 парчиња интегрален леб",
+      "60 g cottage cheese (може да се замени со грчки јогурт)",
+      "црвено овошје (изберете овошје по ваш избор)",
+      "1 лажица путер од бадеми",
+      "1 мала лажичка мед"
+    ],
+    instructions: [
+      "Намачкајте го cottage cheese-от на лепчето, одозгора ставете го овошјето, па путерот и завршетe со малку мед.",
+      "Наместо cottage cheese можете да користите грчки јогурт. Овие два млечни производи имаат супер процент на протеини и се одлична опција да додадете повеќе протеини во оброците. Еден ваков оброк кој содржи доволно од сите макронутриенти ќе ви помогне да имате стабилно ниво на шеќер во крвта што ќе резултира со регулиран апетит и помалку желба за грицкање наоколу.",
+      "Исто така може да го замените и путерот од бадеми со каков било друг путер од јаткасти плодови."
+    ]
+  },
+  {
+    id: 7,
+    name: "ИНТЕГРАЛНО ЛЕПЧЕ СО ПУТЕР ОД КИКИРИТКИ",
+    image: "images/ИНТЕГРАЛНО_ЛЕПЧЕ_СО_ПУТЕР_ОД_КИКИРИТКИ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Намачкајте ги двете парчиња леб со 1 лажица путер од кикиритки, ставете одозгора кругови банана и парчиња кајсија (може да искористите и друго сезонско овошје) и наросете со 1 лажичка ленено семе.",
+    ingredients: [
+      "2 парчиња интегрален леб",
+      "1 лажица путер од кикиритки",
+      "1/2 банана",
+      "1 кајсија (или друго сезонско овошје)",
+      "1 мала лажичка ленено семе"
+    ],
+    instructions: [
+      "Намачкајте ги двете парчиња леб со 1 лажица путер од кикиритки, ставете одозгора кругови банана и парчиња кајсија (може да искористите и друго сезонско овошје) и наросете со 1 лажичка ленено семе."
+    ]
+  },
+  {
+    id: 8,
+    name: "МАФИНИ СО ЈАБОЛКА",
+    image: "images/МАФИНИ_СО_ЈАБОЛКА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Овие мафини се одлична опција за појадок, особено за време на викенд.",
+    ingredients: [
+      "2 јаболка (поголеми, изрендани)",
+      "2 јајца",
+      "1 лажица мед",
+      "3 лажици маслиново масло",
+      "150 g овесни снегулки",
+      "прашок за пециво (малку)",
+      "цимет (по желба)"
+    ],
+    instructions: [
+      "Овие мафини се одлична опција за појадок, особено за време на викенд.",
+      "Можете да ги подготвите заедно со децата и убаво да си го започнете утрото заедно.",
+      "Најпрво со миксер изматете ги јајцата, па додадете го медот, јаболката и маслото. Измешајте убаво, а потоа додадете ги овесните снегулки, прашокот за печиво и циметот. Сѐ убаво соединете и оставете ја смесата 10–12 минути во фрижидер или на собна температура, за овесните снегулки да ја впијат влагата и да омекнат.",
+      "Потоа наполнете ги калапите за мафини и печете на 180°C околу 15–20 минути, со вклучен вентилатор. Секако, следете го печењето, бидејќи секоја рерна е различна.",
+      "Можете да ги комбинирате со грчки јогурт и путер од јатки, вкусот е навистина неверојатен."
+    ]
+  },
+  {
+    id: 9,
+    name: "ПИТА СО КОРНФЛЕКС И МАСЛИНКИ",
+    image: "images/ПИТА_СО_КОРНФЛЕКС_И_МАСЛИНКИ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин со миксер изматете ги јајцата, потоа во нив додадете го јогуртот, водата, маслиновото масло, изрендајте го сирењето и ставете ги маслинките кои претходно ситно ќе ги насечете. Соединете ја смесата убаво и во неа додадете ги овесните снегулки и корнфлексот. Измешајте и оставете ја смесата 15-тина минути за корнфлексот малку да ја впие влагата и да одмекне. Потоа печете во загреана рерна на 180'С околу 15-тина минути. Користете силиконски сад за печење или обичен во кој ќе ставите хартија за полесно да извадите на крај.",
+    ingredients: [
+      "3 јајца",
+      "200 ml јогурт (1 чаша)",
+      "100 ml вода (може и кисела)",
+      "3 лажици маслиново масло",
+      "60 g овесни снегулки",
+      "150 g корнфлекс без шеќер (го има во Гала Натс и од Виталиа)",
+      "100 g сирење (фета)",
+      "10 маслинки",
+      "1 лажица семки (за наросување, може мешавина од тиква, лен, сусам)"
+    ],
+    instructions: [
+      "Најпрвин со миксер изматете ги јајцата, потоа во нив додадете го јогуртот, водата, маслиновото масло, изрендајте го сирењето и ставете ги маслинките кои претходно ситно ќе ги насечете. Соединете ја смесата убаво и во неа додадете ги овесните снегулки и корнфлексот. Измешајте и оставете ја смесата 15-тина минути за корнфлексот малку да ја впие влагата и да одмекне. Потоа печете во загреана рерна на 180'С околу 15-тина минути. Користете силиконски сад за печење или обичен во кој ќе ставите хартија за полесно да извадите на крај.",
+      "3 парчиња и чаша јогурт или комбинација на питата со хумус и некој свеж зелечнук се супер опција за одличен балансиран оброк."
+    ]
+  },
+  {
+    id: 10,
+    name: "СОЛЕНА ПАЛАЧИНКА СО ГРЧКИ ЈОГУРТ И ПРШУТ",
+    image: "images/СОЛЕНА_ПАЛАЧИНКА_СО_ГРЧКИ_ЈОГУРТ_И_ПРШУТ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Изматете го јајцето и во него додадете го брашното и лененото семе. Кога сѐ ќе биде убаво соединето, испечете ја палачинката на загреано тавче што не лепи, кое можете по желба да го премачкате со маслиново масло.",
+    ingredients: [
+      "2 јајца",
+      "2 лажици интегрално брашно (може какво било, јас користев пченично)",
+      "1 мала лажичка ленено семе (мелено)",
+      "маслиново масло (за премачкување на тавата)",
+      "1 лажици грчки јогурт",
+      "1 парче пршута (околу 20 g)",
+      "зелена салата (свежа) (или спанаќ или каков било зеленчук)",
+      "пармезан (рендан, малку за вкус)",
+      "1 лажици семки од тиква"
+    ],
+    instructions: [
+      "Изматете го јајцето и во него додадете го брашното и лененото семе. Кога сѐ ќе биде убаво соединето, испечете ја палачинката на загреано тавче што не лепи, кое можете по желба да го премачкате со маслиново масло.",
+      "Кога ќе биде готова палачинката премачкајте ја со грчкиот јогурт, ставете го пршутот, зеленчукот и наросете со пармезан и со семките од тиква."
+    ]
+  },
+  {
+    id: 11,
+    name: "ТИРАМИСУ ПАЛАЧИНКИ",
+    image: "images/ТИРАМИСУ_ПАЛАЧИНКИ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Подготовката е многу лесна. Сите состојки се ставаат во блендер додека не се добие хомогена смеса. Од оваа количина ќе добиете 5 или 6 мали американски палачинки доволни за 1 оброк, ако сакате да направите за двајца, тогаш дуплирајте ги состојките.",
+    ingredients: [
+      "4 лажици овесни снегулки",
+      "1 лажици ленено семе",
+      "5 g прашок за пециво",
+      "1 мала лажичка инстант кафе (nescafé)",
+      "70 ml растително млеко (може и јогурт)",
+      "1 јајце"
+    ],
+    instructions: [
+      "Подготовката е многу лесна. Сите состојки се ставаат во блендер додека не се добие хомогена смеса. Од оваа количина ќе добиете 5 или 6 мали американски палачинки доволни за 1 оброк, ако сакате да направите за двајца, тогаш дуплирајте ги состојките.",
+      "Пржете на стандарден начин во добро загреана тава за палачинки која не лепи."
+    ]
+  },
+  {
+    id: 12,
+    name: "ТИРАМИСУ ТОСТ",
+    image: "images/ТИРАМИСУ_ТОСТ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Јајцето, млекото и кафето изматете ги заедно и во нив потопете ги парчињата леб. Оставете ги 2-3 минути за да се впие убаво течноста. Добро би било лебот да е малку сув.",
+    ingredients: [
+      "2 интегрално лепче",
+      "3 лажици растително млеко",
+      "пола лажица инстант кафе (nescafé)",
+      "1 јајце",
+      "1 лажици грчки јогурт",
+      "1 лажици путер од јатки (може каков било)",
+      "малина (замрзната) (или некое друго црвено овошје)",
+      "какао (малку, за наросување)",
+      "мед (малку, за наросување)"
+    ],
+    instructions: [
+      "Јајцето, млекото и кафето изматете ги заедно и во нив потопете ги парчињата леб. Оставете ги 2-3 минути за да се впие убаво течноста. Добро би било лебот да е малку сув.",
+      "Потоа на добро загреана тава испечете ги лепчињата и од двете страни. Јас не користев масло воопшто затоа што ја користев тавата за палачинки која не лепи.",
+      "Кога ќе бидат готови лепчињата, врз едното парче ставете грчки јогурт па затворете со другото. И врз другото ставете грчки јогурт, па потоа ставете путер од јатки, наросете со какао, ставете малини, малку мед и уживајте!",
+      "Оброкот е совршенство!"
+    ]
+  },
+  {
+    id: 13,
+    name: "ТОСТЕРКИ СО УРДА И БАНАНА",
+    image: "images/ТОСТЕРКИ_СО_УРДА_И_БАНАНА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Ставете ги сите состојки во блендер, убаво соединете ја смесата и печете ги на добро загреан тостер. Можете да ги пржите и како мали палачинки. Комбинирајте ги со путер од јатки и со чоколаден крем од грчки јогурт, какао и малку мед.",
+    ingredients: [
+      "200 g урда (препорака за Hamoje, од Кам маркет)",
+      "2 јајца",
+      "100 g овесни снегулки",
+      "1/2 банана",
+      "ванила (малку)",
+      "75 ml бадемово млеко",
+      "прашок за печиво (малку)"
+    ],
+    instructions: [
+      "Ставете ги сите состојки во блендер, убаво соединете ја смесата и печете ги на добро загреан тостер. Можете да ги пржите и како мали палачинки. Комбинирајте ги со путер од јатки и со чоколаден крем од грчки јогурт, какао и малку мед.",
+      "Доколку не ставите банана и ванила, можат да бидат и солена опција, па во таков случај супер се комбинираат со хумус, зеленчук, фета сирење и варено јајце."
+    ]
+  },
+  {
+    id: 14,
+    name: "ВАФЛИ СО ТИКВИЦА",
+    image: "images/ВАФЛИ_СО_ТИКВИЦА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Тиквицата прво изрендајте ја и исцедете ја од водата.",
+    ingredients: [
+      "1 тиквица (изрендана и исцедена од водата)",
+      "100 g спанаќ (обарен и ситно насечкан)",
+      "2 јајца",
+      "50 g кашкавал (изрендан)",
+      "50 g интегрално брашно (или овесни снегулки)",
+      "прашок за пециво (малку)"
+    ],
+    instructions: [
+      "Тиквицата прво изрендајте ја и исцедете ја од водата.",
+      "Спанаќот обарете го и ситно насечкајте го.",
+      "Потоа во длабок сад измешајте ги тиквицата и спанаќот и додадете ги двете јајца, малку пециво, кашкавал (изрендан) и брашно или овесни снегулки. Убаво соединете ја смесата и печете ги вафлите на тостер.",
+      "Јас користам мини тостер за вафли кој се покажа одлично, особено за децата, некако посебна љубов имаат кон малите вафли :)",
+      "За оброк се доволни 3 вафли, кои може да ги комбинирате со хумус и свеж зеленчук (јас ги јадев со морков и краставица).",
+      "Нутритивните вредности по вафла се пресметани доколку и вие добиете 8 вафли."
+    ]
+  },
+  {
+    id: 15,
+    name: "ВАРЕНА ОВЕСНА КАША СО ГРЧКИ ЈОГУРТ",
+    image: "images/ВАРЕНА_ОВЕСНА_КАША_СО_ГРЧКИ_ЈОГУРТ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Овесот и чиа семето заедно со водата ставете ги на оган и варете ги додека смесата не се згусне (околу 2-3 минути). Потоа тргнете ги од оган и почекајте малку смесата да се излади. Во варената каша потоа додадете го грчкиот јогурт и бананата исечена на коцки. Измешајте се заедно и ставате во чинија. Одозгора декорирајте со црвеното овошје и со една лажица путер од јатки.",
+    ingredients: [
+      "4 лажици овесни снегулки",
+      "1 лажици чиа семе",
+      "110 ml вода",
+      "пола банана",
+      "75 g грчки јогурт (пола канче)",
+      "1 лажици путер од јатки (каков било)",
+      "црвено овошје (една шака, по желба - малини, боровинки)"
+    ],
+    instructions: [
+      "Овесот и чиа семето заедно со водата ставете ги на оган и варете ги додека смесата не се згусне (околу 2-3 минути). Потоа тргнете ги од оган и почекајте малку смесата да се излади. Во варената каша потоа додадете го грчкиот јогурт и бананата исечена на коцки. Измешајте се заедно и ставате во чинија. Одозгора декорирајте со црвеното овошје и со една лажица путер од јатки.",
+      "Кашата е неодоливо кремаста и вкусна! Сигурна сум дека ќе ви биде еден од омилените рецепти и заради вкусот, но и заради брзината на подготовка.",
+      "Може да си ја носите спакувана во тегличка и на работа. :)"
+    ]
+  },
+  {
+    id: 16,
+    name: "ВАРЕНА ОВЕСНА КАША",
+    image: "images/ВАРЕНА_ОВЕСНА_КАША.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Овесните снегулки заедно со чиа семето и млекото ставете ги да се варат на тивок оган. За многу брзо смесата ќе стане густа, но продолжете да мешате 1-2 минути за овесот убаво да омекне.",
+    ingredients: [
+      "4 лажици овесни снегулки (околу 40 g)",
+      "1 лажица чиа семе (околу 10 g)",
+      "150 ml бадемово млеко (може и друго)",
+      "1/2 банана",
+      "1 лажица протеин во прав (околу 15 g - јас користам вегански од фирмата Драгон - најдобар ми е од семки од тиква)",
+      "30 g малини (може какво било црвено овошје)",
+      "1 лажица путер од јатки"
+    ],
+    instructions: [
+      "Овесните снегулки заедно со чиа семето и млекото ставете ги да се варат на тивок оган. За многу брзо смесата ќе стане густа, но продолжете да мешате 1-2 минути за овесот убаво да омекне.",
+      "На крај тргнете од оган и додадете 1/2 испасирана банана, доколку користите протеин ставете го и него и измешајте убаво.",
+      "Одозгора завршете со некое црвено овошје и 1 лажица путер од јатки. Можете да користите и цели јатки, доколку немате путер (околу 25-30 g).",
+      "Ова ми е безвременски рецепт за овесна каша."
+    ]
+  },
+  {
+    id: 17,
+    name: "ИНТЕГРАЛНА ПРОЈА СО УРДА",
+    image: "images/ИНТЕГРАЛНА_ПРОЈА_СО_УРДА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Важно е да користите иста чаша и со неа да мерите сѐ. Јас за печење користев кружно тавче за печење со дијаметар 24 cm, но можете и во правоаголно.",
+    ingredients: [
+      "2 јајца",
+      "пола чаша маслиново масло",
+      "1 чаша јогурт",
+      "1 чаша пченично интегрално брашно",
+      "1 чаша пченкарно брашно",
+      "100 g урда",
+      "прашок за пециво (малку)",
+      "сол (малку)",
+      "семки (за наросување одозгора - лен, сусам, сончоглед и семки од тиква)"
+    ],
+    instructions: [
+      "Важно е да користите иста чаша и со неа да мерите сѐ. Јас за печење користев кружно тавче за печење со дијаметар 24 cm, но можете и во правоаголно.",
+      "Најпрво изматете ги јајцата заедно со маслото и јогуртот, а потоа во смесата додадете ја урдата, брашната, пецивото и солта. Убаво соединете и исурете ја смесата во тавче за печење. По желба одозгора може да наросите семки. Користете хартија за печење за да не се залепи. Печете во загреана рерна на 180℃ околу 17-20 минути.",
+      "2 парчиња се доволни за оброк. Може да ја комбинирате пројата со хумус и некој сезонски зеленчук, или пак со чаша јогурт и краставица."
+    ]
+  },
+  {
+    id: 18,
+    name: "СНИКЕРС ОВЕСЕН ПУДИНГ",
+    image: "images/СНИКЕРС_ОВЕСЕН_ПУДИНГ.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Во блендер ставете ја бананата, бадемовото млеко, какаото и путерот од кикиритки. Ќе добиете густа хомогена смеса.",
+    ingredients: [
+      "1 банана",
+      "120-150 ml бадемово млеко",
+      "1 мала лажичка какао",
+      "1 лажица путер од кикиритки",
+      "3 лажици овесни снегулки",
+      "1 лажица чиа семе",
+      "црвено овошје (малини, боровинки)"
+    ],
+    instructions: [
+      "Во блендер ставете ја бананата, бадемовото млеко, какаото и путерот од кикиритки. Ќе добиете густа хомогена смеса.",
+      "Во друг сад измешајте ги овесните снегулки и чиа семето и со смесата од блендерот потопете ги.",
+      "Оставете го пудингот околу 1 час за убаво да се впие влагата во овесните снегулки и да стане густ и кремаст. Може да си го направите и навечер за да биде спремно за следниот ден за појадок.",
+      "На крај само одозгора додадете некое црвено овошје по избор. Мене највкусно ми е со боровинки и малини.",
+      "Доколку сакате да зголемите внес на протеини на сметка на една лажица овес можете да ставите протеин (доколку користите)."
+    ]
+  },
+  {
+    id: 19,
+    name: "ТОСТ СО ЛЕПЧЕ ОД ОВЕС И ЈАЈЦА",
+    image: "images/ТОСТ_СО_ЛЕПЧЕ_ОД_ОВЕС_И_ЈАЈЦА.jpg",
+    category: "breakfast",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Овa е брз тост кој се прави без леб, всушност лепчето за тостот си го подготвувате сами од овесни снегулки, семки и јајца.",
+    ingredients: [
+      "2 јајца",
+      "4 лажици мешавина од овесни снегулки, семки од тиква, сончоглед и ленено семе",
+      "сол и малку оригано",
+      "30 g кашкавал (гауда)",
+      "1/2 домат",
+      "1/4 авокадо"
+    ],
+    instructions: [
+      "Овa е брз тост кој се прави без леб, всушност лепчето за тостот си го подготвувате сами од овесни снегулки, семки и јајца.",
+      "Наместо брашно ја користев мешавината од овес и семки и од неа ставив 4 лажици.",
+      "Јајцата ги изматив заедно со мешавината и додадов малку сол.",
+      "Потоа ја ставате смесата на хартија за печење и ја ставате на добро загреан тостер. Користев хартија за да сум сигурна дека нема да се залепи.",
+      "Кога малку ќе се запече, на едната половина го ставате кашкавалот, и го преклопувате тостот со другата половина внимателно. Потоа го оставате на тостер уште малку додека кашкавалот омекне.",
+      "На крај извадете го тостот и внатре ставете кругови домат и авокадо.",
+      "Може да користите и некој намаз (хумус, песто) или грчки јогурт."
+    ]
+  },
+  {
+    id: 20,
+    name: "MЕКСИКАНСКО БУРИТО",
+    image: "images/MЕКСИКАНСКО_БУРИТО.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин ставете го маслото да се загрее, потоа додадете го кромидот насечкан на ситно (оставете 1/4 од кромидот за салатата). Кога кромидот ќе омекне додадете го месото, на крај кога е готово додадете 1 лажичка сенф, сол и додадете некои зачини по ваша желба. Јас користев само сол и оригано.",
+    ingredients: [
+      "4 интегрални тортиљи",
+      "250 g мелено месо",
+      "1 главица кромид",
+      "1 лажица маслиново масло",
+      "1 мала лажичка сенф",
+      "сол и малку оригано",
+      "1 домат (1 поголем или 2 помали)",
+      "1 краставица",
+      "400 g мексиканска мешавина (во конезерва, јас ја купувам од Кам)",
+      "зелена салата (свежа)"
+    ],
+    instructions: [
+      "Најпрвин ставете го маслото да се загрее, потоа додадете го кромидот насечкан на ситно (оставете 1/4 од кромидот за салатата). Кога кромидот ќе омекне додадете го месото, на крај кога е готово додадете 1 лажичка сенф, сол и додадете некои зачини по ваша желба. Јас користев само сол и оригано.",
+      "На страна на ситни коцки насечете го доматот, краставицата и малото парче кромид што ви остана. Во салатата додадете ја мексиканската мешавина и измешајте убаво.",
+      "На крај врз секоја тортиља ставете првин од месото, па од мешавината со зеленчук, па малку зелена салата. Можете доколку сакате да си додадете и некој зачин дополнително и уште малку сенф.",
+      "Замотајте ги сите 4 буртита и ставете ги во тава кратко да се запечат од двете страни."
+    ]
+  },
+  {
+    id: 21,
+    name: "БРЗИ ЛАЗАЊИ ОД ТОРТИЉИ",
+    image: "images/БРЗИ_ЛАЗАЊИ_ОД_ТОРТИЉИ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Идејата за овој рецепт ја видов на интернет ама бев искрено малку скептична како ќе излезе, но излезе ФАНТАСТИЧНО и што е најважно неверојатно брзо и многу ВКУСНО.",
+    ingredients: [
+      "4 интегрални тортиљи",
+      "400 g мелено месо (можете какво било, јас користев мешавина од свинско и телешко)",
+      "1 главица кромид",
+      "2 домати",
+      "1 лажица маслиново масло",
+      "1 мала лажичка сенф",
+      "сол",
+      "лук (по желба)",
+      "150 g грчки јогурт (едно канче)",
+      "50 g кашкавал (рендан)"
+    ],
+    instructions: [
+      "Идејата за овој рецепт ја видов на интернет ама бев искрено малку скептична како ќе излезе, но излезе ФАНТАСТИЧНО и што е најважно неверојатно брзо и многу ВКУСНО.",
+      "Дефинитивно ова ќе биде еден од опциите за ручек кои ќе ги правам почесто затоа што и децата беа воодушевени.",
+      "Најпрвин потребно е да го подготвите месото. Кромидот насечете го на ситни парченца и заедно со маслиновото масло ставете го на оган. Кога ќе стане проѕирен додадете го месото и мешајте. Кога месото ќе ја смени бојата додадете ги домати кои ќе ги изрендате или изблендирате. Оставете на тивко 5-6 минути додека убаво да испари водата од доматите. На крај додадете сол, 1 лажичка сенф (дава особено добар вкус) и малку лук, доколку сакате.",
+      "Кога сосот ќе биде готов, во кружно плехче ја ставате првин првата тортиља. Јас користев и хартија за печење за да немам проблем со вадење на крај.",
+      "Врз првата тортиља ставате 1/3 од сосот. Потоа ја ставате втората тортиља, пак пак сос и така се до последната. На крај врз последната тортиља мачкате грчки јогурт и го ставате врз него изренданиот кашкавал.",
+      "Ставате ги лазањите во загреана рерна на 180С да се печат околу 10-15 минути. Следете го печењето, а доколку имате јака рерна намалете малку.",
+      "На крај извадете ги лазањите и оставете ги да се оладат, не ги сечете топли, многу поубаво се впива сосот и се повкусни ако малку ги оставите на страна, отприлика 10-15 минути.",
+      "Комбинирајте го овој ручек задолжително со свежа сезонска салата."
+    ]
+  },
+  {
+    id: 22,
+    name: "БУЛГУР БОЛОЊЕЗЕ",
+    image: "images/БУЛГУР_БОЛОЊЕЗЕ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Булгурот посебно сварете го во вода. Ставете вода повеќе, па кога ќе омекнат зрната вишокот вода фрлете го. Вообичаено му требаат околу 10-12 минути вриење на тивок оган за да се свари.",
+    ingredients: [
+      "180 g булгур",
+      "400 g мелено мешано месо (телешко и свинско))",
+      "1 кромид",
+      "1 морков",
+      "250 ml доматно пире",
+      "вода (малку)",
+      "1 мала лажичка сенф",
+      "2 лажици маслиново масло",
+      "зачин (сол, оригано и лук)",
+      "салата по избор (свежа)"
+    ],
+    instructions: [
+      "Булгурот посебно сварете го во вода. Ставете вода повеќе, па кога ќе омекнат зрната вишокот вода фрлете го. Вообичаено му требаат околу 10-12 минути вриење на тивок оган за да се свари.",
+      "Кромидот и морковот исечкајте ги ситно и заедно со маслиновото масло кратко запржете ги. Додадете го месото и пржете уште малку, додека месото не ја смени бојата. Потоа додадете го доматното пире и ставете малку вода, околу 50 ml. На крај додадете го сенфот и зачините и оставете го болоњезе сосот на тивко да крчка околу 5-7 минути. Во меѓувреме и булгурот ќе се свари, па процедете го од вишокот вода и соединете го со сосот.",
+      "Во однос на месото, јас многу често користам мелено месо затоа што децата повеќе сакаат, но никогаш не купувам готово мелено месо туку на лице место бирам и ми го мелат за мене. Така сум сигурна што има внатре.",
+      "Комбинирајте задолжително со свежа салата по избор во зависност од достапноста на зеленчуци."
+    ]
+  },
+  {
+    id: 23,
+    name: "БУЛГУР СО НАУТ И ЗЕЛЕНЧУК",
+    image: "images/БУЛГУР_СО_НАУТ_И_ЗЕЛЕНЧУК.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "За подготовка на овој ручек јас користев веќе готов вакуумиран наут (го купив од Веро, подготвен е на пареа). Можете да искористите секако и од тегла, конзерва или пак сами да си сварите, но ако варите сами, би требало да ставите околу 60-70 g сиров.",
+    ingredients: [
+      "70 g булгур (мерен пред готвење)",
+      "200 g златен микс (замрзната мешавина од грашок, пченка, морков)",
+      "200 g наут (варен) (јас користев готов, можете и сами да сварите, би требало да ставите околу 60-70 g сиров)",
+      "200 ml доматен сос",
+      "2 лажици маслиново масло",
+      "1 мала лажичка сенф",
+      "сол, црвен бибер, лук и нане"
+    ],
+    instructions: [
+      "За подготовка на овој ручек јас користев веќе готов вакуумиран наут (го купив од Веро, подготвен е на пареа). Можете да искористите секако и од тегла, конзерва или пак сами да си сварите, но ако варите сами, би требало да ставите околу 60-70 g сиров.",
+      "Во тава ставете го маслото заедно со златниот микс и кратко запржете, потоа додадете ги сварените зрна наут и доматното пире. Оставете на тивко околу 5-6 минути. Потоа додадете сенф, сол и зачини.",
+      "На крај, последно додадете го сварениот булгур и измешајте сѐ заедно. Булгурот се вари посебно, но доста брзо. За околу 10-12 минути максимум е готов и омекнат.",
+      "Комбинирајте го овој ручек со свежа салата по избор."
+    ]
+  },
+  {
+    id: 24,
+    name: "ПАСТРМКА СО ПЕЧЕНИ МОРКОВИ",
+    image: "images/ПАСТРМКА_СО_ПЕЧЕНИ_МОРКОВИ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Филетираната и обескостена пастрмка од Royal Fish е дефинитивно најубавата риба што сум ја јадела, а не сум некој фан на риба. Во едно пакување се две филети и најчесто се околу 400-500 g. Ќе ги најдете во Кам, Стокомак и Веро маркети. Секако, опција е да искористите во оброкот и каква било друга риба.",
+    ingredients: [
+      "500 g пастрмка (јас користев свежа филетирана пастрмка од Royal Fish, ги има во Кам, Стокомак и Веро))",
+      "пола мала лажичка сенф",
+      "сол (малку, за рибата)",
+      "1 лимон",
+      "4-5 моркови",
+      "2 лажици маслиново масло (за морковите)",
+      "сол, црвен и црн бибер (за морковите)",
+      "рукола (или каква било друга свежа салата)"
+    ],
+    instructions: [
+      "Филетираната и обескостена пастрмка од Royal Fish е дефинитивно најубавата риба што сум ја јадела, а не сум некој фан на риба. Во едно пакување се две филети и најчесто се околу 400-500 g. Ќе ги најдете во Кам, Стокомак и Веро маркети. Секако, опција е да искористите во оброкот и каква било друга риба.",
+      "На хартија за печење ставете ги двете филети и одозгора премачкајте ги со малку сенф, посолете и наредете ги со кругови лимон. Околу нив на хартијата ќе ги ставите морковите, но првин ќе ги спремите и зачините во друг сад.",
+      "Насечете ги на долги ленти како на сликата, ставете им сол, црвен и црн бибер и маслиново масло. Убаво измешајте ги и ставете ги околу пастрмката.",
+      "Печете во загреана рерна на 180°C околу 15-20 минути. Следете го печењето затоа што секоја рерна има различна јачина и моќност.",
+      "На крај, сервирајте задолжително со свежа салата по ваш избор. Јас користев свежа рукола и плус си наросив малку семки од тиква."
+    ]
+  },
+  {
+    id: 25,
+    name: "ПИЦА СО ТЕСТО ОД ЦРВЕНА ЛЕЌА",
+    image: "images/ПИЦА_СО_ТЕСТО_ОД_ЦРВЕНА_ЛЕЌА.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Сите состојки за тестото изблендирајте ги заедно, па излијте ја содржината на хартија за печење. Јас го користам најголемиот плех кој го имам затоа што го сакам тестото потенко.",
+    ingredients: [
+      "180-200 g црвена леќа (кисната во вода минимум 3 часа или преку ноќ)",
+      "1 мала лажичка прашок за пециво",
+      "сол (малку)",
+      "170 ml вода",
+      "2 лажици маслиново масло",
+      "доматен сос",
+      "домат (парчиња)",
+      "100-тина g златен микс (замрзната мешавина од грашок, пченка, морков)",
+      "100 g кашкавал",
+      "оригано",
+      "јатки (мелени, или пак веган топинг од мелени јатки и зачини од ДМ (дава посебен шмек))"
+    ],
+    instructions: [
+      "Сите состојки за тестото изблендирајте ги заедно, па излијте ја содржината на хартија за печење. Јас го користам најголемиот плех кој го имам затоа што го сакам тестото потенко.",
+      "Запечете го прво тестото кратко, околу 7-8 минути, а потоа извадете го и наредете го филот, па вратете да се пече уште неколку минути додека кашкавалот не се стопи.",
+      "Оваа верзија може да биде и веге/посна ако наместо кашкавал ставите тофу."
+    ]
+  },
+  {
+    id: 26,
+    name: "ПИЛЕШКО СО ЧИПС ОД КОМПИРИ",
+    image: "images/ПИЛЕШКО_СО_ЧИПС_ОД_КОМПИРИ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Приготвување на пилешкото:",
+    ingredients: [
+      "600 g пилешки стек (мерен пред готвење)",
+      "600 g компири",
+      "250 g печурки",
+      "4 лажици маслиново масло",
+      "сол, лук, црвен бибер и оригано",
+      "1 мала лажичка сенф",
+      "1 мала лажичка мед",
+      "зелена салата (свежа) (по избор)"
+    ],
+    instructions: [
+      "Приготвување на пилешкото:",
+      "Пилешкото месо исечете го на ситни коцки, загрејте 1 лажица маслиново масло во тава и запржете го додека не зарумени и не смени боја. Додадете ги ситно сечканите печурки, зачинете со сол, лук, црвен пипер и оригано, па продолжете со пржење додека печурките омекнат и месото биде целосно зготвено. Во мала чинија измешајте мед и сенф, па прелијте го месото со оваа мешавина.",
+      "Приготвување на крцкавиот компир:",
+      "Излупете ги компирите и со алатка за лупење или нож исечете ги на тенки кругови. Доколку немате време, можете да ги исечете и на покрупни парчиња. Ставете ги во сад, додајте 3 лажици маслиново масло и сол, па добро промешајте. Наредете ги во плех со хартија за печење и печете во загреана рерна на 200°C околу 15-20 минути, додека не станат златно крцкави.",
+      "Сервирајте го овој вкусен оброк со свежа салата по избор."
+    ]
+  },
+  {
+    id: 27,
+    name: "ПИЛЕШКО СО ЗЕЛЕНЧУК",
+    image: "images/ПИЛЕШКО_СО_ЗЕЛЕНЧУК.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Месото малку посолете го и премачкајте го со сенф. Ставете да се загрее 1 лажица маслиново масло во грил тава, па потоа додадете го месото и пржете го од двете страни додека малку зарумени.",
+    ingredients: [
+      "400 g пилешки стек (мерен пред готвење)",
+      "2 пиперки (зелени)",
+      "2 пиперки (црвени)",
+      "2 моркови",
+      "1 тиквичка",
+      "2 лажици маслиново масло",
+      "сол хималајска",
+      "1 мала лажичка сенф",
+      "зелена салата (свежа)"
+    ],
+    instructions: [
+      "Месото малку посолете го и премачкајте го со сенф. Ставете да се загрее 1 лажица маслиново масло во грил тава, па потоа додадете го месото и пржете го од двете страни додека малку зарумени.",
+      "Зеленчукот исечкајте го на долги ленти и со другата лажица маслиново масло ставете го да се пржи/динста. Самиот зеленчук ќе си пушти вода и ќе се динста и готви во сопствениот сок. На крај додадете само сол. Други зачини не се потребни, самиот зеленчук си дава одлична комбинација на вкусови.",
+      "Комбинирајте го овој одличен ручек со свежа сезонска салата. Јас го комбинирав со млад спанаќ, марула и рукола."
+    ]
+  },
+  {
+    id: 28,
+    name: "ПОСНА САЛАТА СО ТЕСТЕНИНИ И РИБА",
+    image: "images/ПОСНА_САЛАТА_СО_ТЕСТЕНИНИ_И_РИБА.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин ставете ги тестенините да се варат и варете ги на стандарден начин. Во меѓувреме јас ја ставив рибата да се подготви во мултикукер на пареа, но можете да ја ставите и во рерна на 200'С околу 10-тина минути. Исто така наместо лосос можете да користите туна.",
+    ingredients: [
+      "250 g тестенини (интегрални)",
+      "250 g златен микс (замрзната мешавина од грашок, пченка, морков)",
+      "250 g лосос (филети)",
+      "зелена салата (свежа) (марула, рукола...)",
+      "сок од лимон",
+      "маслиново масло, сол и зачини по желба"
+    ],
+    instructions: [
+      "Најпрвин ставете ги тестенините да се варат и варете ги на стандарден начин. Во меѓувреме јас ја ставив рибата да се подготви во мултикукер на пареа, но можете да ја ставите и во рерна на 200'С околу 10-тина минути. Исто така наместо лосос можете да користите туна.",
+      "Инаку ги користев замрзнати филети лосос кои најчесто ги купувам од Кам или Стокомак. Во пакувањето се две и некои пакувања се 200 g, некои се 250 g.",
+      "Во тавче ставете 1 лажица маслиново масло и ставете ја замрзнатата мешавина, малку посолете и гответе ја додека не омекне.",
+      "На крај во еден поголем сад ставете ги макароните, во нив додадете ја мешавината и рибата која со виљушка ќе ја изгмечите на ситни парченца. Измешајте убаво и додадете 1-2 лажици маслиново масло и уште малку сол.",
+      "Во поголема чинија ставете салата и врз неа ставете од тестенините и рибата, одозгора попрскајте со малку сок од лимон и уживајте.",
+      "Јас од оваа колична на состојки направив четири порции.",
+      "За нас користев марула и рукола, а децата сакаа со коцки краставица. Можете да изберте салата по ваш избор."
+    ]
+  },
+  {
+    id: 29,
+    name: "ОБРОК САЛАТА СО ПИЛЕШКО И ТЕСТЕНИНИ",
+    image: "images/ОБРОК_САЛАТА_СО_ПИЛЕШКО_И_ТЕСТЕНИНИ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Пилешкиот стек исечете го на долги ленти. Јас во овој рецепт искористив веќе готов купен стек, затоа што кога го подготвував оброкот, навистина бев во голема гужва и немав време воопшто за готвење. Дури и не планирав да го ставам на платформата, но мислам дека е многу вкусна и брза опција што може да ви послужи.",
+    ingredients: [
+      "150 g пилешки стек (можете сами да го испечете дома, јас во овој рецепт користев готов)",
+      "60 g тестенини",
+      "зелена салата (свежа)",
+      "пола лажица маслиново масло",
+      "1 мала лажичка мед",
+      "1 мала лажичка сенф",
+      "1 лажица сок од лимон",
+      "сол (по потреба)"
+    ],
+    instructions: [
+      "Пилешкиот стек исечете го на долги ленти. Јас во овој рецепт искористив веќе готов купен стек, затоа што кога го подготвував оброкот, навистина бев во голема гужва и немав време воопшто за готвење. Дури и не планирав да го ставам на платформата, но мислам дека е многу вкусна и брза опција што може да ви послужи.",
+      "Вие можете да искористите и свеж стек и сами да го подготвите Тестенините ги варите одделно, 60 g тестенини се доволни за една порција, бидејќи целта не е оброкот да биде само тестенини, туку да биде балансиран комплетен оброк.",
+      "Во голем сад ставете зелена салата, додадете ги варените тестенини и пилешкото. Потоа подгответе го дресингот, измешајте ги заедно маслиново масло, медот, сенфот и лимоновиот сок. По потреба, врз салатата, пилешкото и тестенините додадете сол. Јас најчесто состојките за дресингот ги мешам со маталка за нес кафе за да се соединат убаво и да се добие еднолична хомогена смеса. Прелијте го дресингот врз салатата и тоа е тоа. Оброкот е подготвен!",
+      "Ако, како мене, користите готов стек, оваа оброк салата ќе ви биде спремна за само 10-тина минути.",
+      "Од нутритивен аспект е супер балансирана затоа што содржи доволно преотеини, јаглехидрати, но и масти и влакна."
+    ]
+  },
+  {
+    id: 30,
+    name: "БРЗА ОБРОК САЛАТА СО ПИЛЕШКО",
+    image: "images/БРЗА_ОБРОК_САЛАТА_СО_ПИЛЕШКО.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Марулата и руколата ги сечете ситно и ги ставате во поголема чинија. Во меѓувреме месото го сечете на ситни коцки, малку го посолувате, го премачкувате со сенф и го запржувате во тавче со 1 лажичка маслиново масло додека зарумени.",
+    ingredients: [
+      "марула",
+      "рукола",
+      "кромид (по желба)",
+      "150 g пилешки стек (мерен пред готвење)",
+      "сол и малку сенф (за премачкување на месото)",
+      "1 мала лажичка маслиново масло (за пржење (динстање) на месото)",
+      "100 g златен микс (замрзната мешавина од грашок, пченка, морков)",
+      "прелив за салатата: 1 лажичка сенф, 1 лажичка мед, 1 лажичка маслиново масло и 1 лажица сок од лимон"
+    ],
+    instructions: [
+      "Марулата и руколата ги сечете ситно и ги ставате во поголема чинија. Во меѓувреме месото го сечете на ситни коцки, малку го посолувате, го премачкувате со сенф и го запржувате во тавче со 1 лажичка маслиново масло додека зарумени.",
+      "Додека го спремате месото ставете 100 g од мешавината во топла вода што врие за да омекне и да се размрзне, па на крај само процедете ја и ставете ја во садот со салатата. Кога месото ќе биде готово и него ставете го, па последно подгответе го преливот.",
+      "Измешајте ги сите состојки и прелијте одозгора.",
+      "Доколку имате потреба посолете уште малку."
+    ]
+  },
+  {
+    id: 31,
+    name: "ТУРЛИ ТАВА СО МЕЛЕНО МЕСО",
+    image: "images/ТУРЛИ_ТАВА_СО_МЕЛЕНО_МЕСО.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Кромидот и маслото ставете ги во тавче на оган и почекајте малку да зарумени кромидот. Потоа додадете го месото и мешајте. Кога месото ќе омекне и ќе ја смени бојата додадете го преостанатиот зеленчук и залијте со доматниот сос. Измешајте убаво и покријте го тавчето. Оставете го да крчка 15-20 минути со повремено мешање. Не додавајте вода. На крај кога ќе омекне целокупниот зеленчук додадете сол и оригано или зачини по желба. За подготовка на овој ручек нема да ви бидат потребни повеќе од половина час, а ќе имате богат и нутритивен оброк за цело семејство.",
+    ingredients: [
+      "400 g златен микс (замрзната мешавина од грашок, пченка, морков)",
+      "400 g мелено мешано месо",
+      "150 g зелка",
+      "200 ml доматен сос (може замена 1 или 2 свежи домати изрендани)",
+      "150 g шампињони",
+      "1 кромид",
+      "3 лажици маслиново масло",
+      "сол",
+      "оригано",
+      "салата по избор (марула и ротквичка)"
+    ],
+    instructions: [
+      "Кромидот и маслото ставете ги во тавче на оган и почекајте малку да зарумени кромидот. Потоа додадете го месото и мешајте. Кога месото ќе омекне и ќе ја смени бојата додадете го преостанатиот зеленчук и залијте со доматниот сос. Измешајте убаво и покријте го тавчето. Оставете го да крчка 15-20 минути со повремено мешање. Не додавајте вода. На крај кога ќе омекне целокупниот зеленчук додадете сол и оригано или зачини по желба. За подготовка на овој ручек нема да ви бидат потребни повеќе од половина час, а ќе имате богат и нутритивен оброк за цело семејство."
+    ]
+  },
+  {
+    id: 32,
+    name: "ЗЕЛЕНЧУКОВА МАНЏА СО ЛЕЌА",
+    image: "images/ЗЕЛЕНЧУКОВА_МАНЏА_СО_ЛЕЌА.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Кромидот, морковот и тиквичката насечкајте ги на ситни коцки и заедно со маслиновото масло ставете ги во тенџерето во кое ќе ја правите манџата и кратко запржете ги.",
+    ingredients: [
+      "1 главица кромид",
+      "1 морков",
+      "1 тиквица",
+      "2 компири",
+      "180 g црвена леќа (кисната во вода барем 2 часа)",
+      "500 ml вода",
+      "2 лажици маслиново масло",
+      "150 g спанаќ (замрзнати брикети, но може и свеж)",
+      "сол, црвен бибер, лук и нане"
+    ],
+    instructions: [
+      "Кромидот, морковот и тиквичката насечкајте ги на ситни коцки и заедно со маслиновото масло ставете ги во тенџерето во кое ќе ја правите манџата и кратко запржете ги.",
+      "Кога малку ќе омекнат додадете ја леќата (претходно кисната барем 2 часа во вода и убаво измиена) и компирот (насечкан на коцки) и налејте околу 500 ml вода. Додадете малку сол, па кога ќе зоврие намалете го шпоретот и оставете го да крчка околу 10-15 минути со полуотворен капак. Кога зеленчукот ќе омекне, на крај додадете ги брикетите спанаќ. Јас користев замрзнат, но можете да користите и свеж. Доколку користите свеж моја препорака за да искористе повеќе нутриенти е да го поминете спанаќот со топла, па со ладна вода и потоа а го насечкате па да го ставите во манџата. Оставете уште 1-2 минути да крчка и потоа тргнете од оган па доадете ги зачините. Јас користев лук во прав, цврен бибер и малку нане.",
+      "Доколку немате тиквица, можете да ставите и друг зеленчук, пример карфиол.",
+      "Манџата е совршенство, сигурна сум дека ќе си ја правите често.",
+      "Комбинирајте со свежа салата по избор."
+    ]
+  },
+  {
+    id: 33,
+    name: "КРЕМАСТА МАНЏА ОД ЦРВЕНА ЛЕЌА И СПАНАЌ",
+    image: "images/КРЕМАСТА_МАНЏА_ОД_ЦРВЕНА_ЛЕЌА_И_СПАНАЌ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Кромидот, морковот и доматите ситно исечкајте ги и заедно со маслиновото масло ставете ги да се запржат во соодветно поголемо тавче.",
+    ingredients: [
+      "1 кромид",
+      "1 морков",
+      "3 домати (или 2 поголеми)",
+      "1 лажица маслиново масло",
+      "200 g црвена леќа (претходно кисната во вода минимум 2 часа)",
+      "200 ml кокосово млеко (може да го замените со вода или доматен сос)",
+      "300-350 ml вода",
+      "200 g спанаќ (обарен)",
+      "сол",
+      "кари",
+      "црвен бибер",
+      "лук"
+    ],
+    instructions: [
+      "Кромидот, морковот и доматите ситно исечкајте ги и заедно со маслиновото масло ставете ги да се запржат во соодветно поголемо тавче.",
+      "Кога ќе омекнат додадете ја леќата која претходно сте ја киснеле во вода минимум 2 часа или преку ноќ, a пред да ја додадете убаво измијте ја преку цедалка.",
+      "Ставете ја леќата во тавата и потоа додадете го кокосовото млеко. Доколку не сте љубител на кокосово млеко слободно заменете го со доматен сос или едноставно само со вода.",
+      "Потоа додадете ја водата и оставете да крчка 8-10 минути на тивко.",
+      "Кога течноста убаво ќе се впие и зрната леќа ќе омекнат тогаш руечкот е скоро готов.",
+      "На крај додадете ги солта и зачините и последно спанаќот кој претходно ќе го обарите кратко и ќе го насечкате.",
+      "Измешајте се заедно и уживајте во вкусовите. Можете да го искомбинирате овој ручек со свежа салата од марула, краставица или зелка. Добар апетит!"
+    ]
+  },
+  {
+    id: 34,
+    name: "КУС-КУС СО ЗЕЛЕНЧУК И ПЕЧЕНА РИБА",
+    image: "images/КУС-КУС_СО_ЗЕЛЕНЧУК_И_ПЕЧЕНА_РИБА.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Додека го спремате зеленчукот и кус-кусот ставете ја рибата да се пече. Во сад за печење на хартија за печење наредете ги филетите и одозгора напрскајте ги малку со маслиново масло, сол, црвен бибер, лук во прав и сок од лимон. Печете ги на температура од 160- 170℃ околу 15- 20 минути.",
+    ingredients: [
+      "2 моркови (поголеми)",
+      "1 брокула (1 китка)",
+      "спанаќ (малку)",
+      "6 маслинки",
+      "200 g шампињони",
+      "70 g кус-кус (несварен, или околу 350 g сварен)",
+      "1 лажици сенф",
+      "3 лажици златен микс (замрзната мешавина од грашок, пченка, морков) (по желба, може само пченка)",
+      "500 g ослич (филети)",
+      "3 лажици маслиново масло",
+      "сол",
+      "зачин по желба",
+      "сок од лимон (за рибата)"
+    ],
+    instructions: [
+      "Додека го спремате зеленчукот и кус-кусот ставете ја рибата да се пече. Во сад за печење на хартија за печење наредете ги филетите и одозгора напрскајте ги малку со маслиново масло, сол, црвен бибер, лук во прав и сок од лимон. Печете ги на температура од 160- 170℃ околу 15- 20 минути.",
+      "Кус-кусот прелијте го со врела вода, но ставете повеќе вода и оставете го на оган малку да поврие и да ја впие водата. За 3-4 минути е готов. Ако има вишок вода преку цедалка фрлете ја.",
+      "Во тава што не лепи заедно со 2 лажици маслиново масло ставете го зеленчукот кој претходно ќе го исечете на посакуваните парчиња. Брокулата пред да ја ставите поминете ја со топла вода за да добие убава зелена боја.",
+      "Мешате неколку минути дури малку не омекне и на крај додадете го кус-кусот. Ставете една лажица сенф, сол и зачини по желба и измешајте убаво. Комбинирајте го овој вкусен и нутритивен ручек со свежа сезонска салата."
+    ]
+  },
+  {
+    id: 35,
+    name: "МАЛИ ЛЕПЧИЊА СО СПАНАЌ И СЕМИЊА (СЕНДВИЧИЊА)",
+    image: "images/МАЛИ_ЛЕПЧИЊА_СО_СПАНАЌ_И_СЕМИЊА_(СЕНДВИЧИЊА).jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Обожавам за викенд да печам нешто, едноставно ми доаѓа желба да мириса домот на свежо печено. Си реков ај да пробам да направам некои лепчиња за сендвичи… и искрено, испаднаа совршени. Какви се следен ден, не знам 😄 Не стигнаа ни да се оладат, веднаш се изедоа 🤍",
+    ingredients: [
+      "4 јајца",
+      "150 g грчки јогурт",
+      "100 g брашно од спелта",
+      "50 g сенаменско брашно (јас користев тип 500)",
+      "10 g чиа семе",
+      "20 g семиња (мешавина или едно по избор)",
+      "50 g спанаќ (свеж, ситно исецкан)",
+      "сол (сосема малку)",
+      "прашок за печиво (малку)"
+    ],
+    instructions: [
+      "Обожавам за викенд да печам нешто, едноставно ми доаѓа желба да мириса домот на свежо печено. Си реков ај да пробам да направам некои лепчиња за сендвичи… и искрено, испаднаа совршени. Какви се следен ден, не знам 😄 Не стигнаа ни да се оладат, веднаш се изедоа 🤍",
+      "Јајцата ги матиме со миксер, па потоа го додаваме грчкиот јогурт и уште малку матиме. На крај ги додаваме сувите состојки: брашното, чиа семето, семињата, спанаќот, солта и малку прашок за печиво. Смесата убаво ја соединуваме, може со лажица, не мора со миксер.",
+      "Со голема лажица ставете од смесата на хартија за печење. Смесата е течна, не многу, но доволно за да може да формирате кругови (не се работи со раце, туку се става директно со лажица).",
+      "Јас добив 9 лепчиња, но зависи колкави ќе ги направите, може да излезат повеќе или помалку.",
+      "Се печат во загреана рерна на 180С околу 10–12 минути, со вклучен вентилатор. Следете ги затоа што секоја рерна е различна.",
+      "За сендвичињата (количината е за во едно сендвиче):",
+      "Откако ќе се испечат, ги сечете на половина и ги полните по желба.",
+      "Јас ставив:малку котиџ сирење (може и хумус или кој било намаз) 15 g кашкавал 1 парче пршута (околу 10 г) кругче домат и неколку тркалца краставица",
+      "За оброк ви се доволни 2 сендвичиња.",
+      "Пробајте ги, навистина се многу практични и за вас, и за деца, и за носење. Кај нас децата не дадоа ни да се изладат, така што дефинитивно ќе ги правам почесто 🤍"
+    ]
+  },
+  {
+    id: 36,
+    name: "МЕЛЕНО МЕСО СО НАУТ И ЗЕЛЕНЧУК",
+    image: "images/МЕЛЕНО_МЕСО_СО_НАУТ_И_ЗЕЛЕНЧУК.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Подготовка:",
+    ingredients: [
+      "400 g мелено мешано месо (може и само телешко или само свинско или пак пилешко)",
+      "1 главица кромид",
+      "2 лажици маслиново масло",
+      "1 мала лажичка сенф",
+      "сол",
+      "200 g наут (јас користев готов од тегла)",
+      "400 g мексиканска мешавина (цела конзерва)",
+      "црн бибер",
+      "лук (по желба)",
+      "салата по избор"
+    ],
+    instructions: [
+      "Подготовка:",
+      "Насечкајте го кромидот ситно и заедно со маслиновото масло ставете го во тава да се запржи. Кога малку ќе омекне додадете го меленото месо и малку посолете. Пржете додека месото не ја смени бојата, потоа доадете малку сенф, па додадете го мексианскиот микс и наутот.",
+      "Измешајте убаво и оставете на оган уште 3-4 минути. На крај зачинете со малку црн бибер и лукче.",
+      "Комбинирајте го овој ручек со свежа салата. Јас во половина чинија ставив салата од морков, зелка, марула, краставица и суви домати (се гледа на сликата), а во пола од ручекот, па на крај измешав заедно."
+    ]
+  },
+  {
+    id: 37,
+    name: "НАУТ КАРИ СО ЗЕЛЕНЧУК",
+    image: "images/НАУТ_КАРИ_СО_ЗЕЛЕНЧУК.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Насечкајте го зеленчукот на ситно и во тава ставете го заедно со маслиновото масло (освен брокулата). Кратко пржете додека малку омекне, па додадете ги доматите насекчани на ситни парченца. Оставете на тивко зеленчукот да омекне целосно и вкусовите да се соединат. Потоа додадете го наутот, а последно брокулата. Измешајте и пржете многу кратко, брокулата да остане крцкава. На крај додадете сол, кари и црвен бибер.",
+    ingredients: [
+      "200 g наут (сварен или наут од тегла/кознерва)",
+      "1 кромид",
+      "1 тиквичка (со средна големина)",
+      "1 модар домат (со средна големина)",
+      "300 g зелка",
+      "3 домати (со средна големина или 1 чаша доматно пире)",
+      "1 брокула (китка)",
+      "1 мала лажичка сол",
+      "2 лажици маслиново масло",
+      "пола мала лажичка кари",
+      "пола мала лажичка црвен бибер"
+    ],
+    instructions: [
+      "Насечкајте го зеленчукот на ситно и во тава ставете го заедно со маслиновото масло (освен брокулата). Кратко пржете додека малку омекне, па додадете ги доматите насекчани на ситни парченца. Оставете на тивко зеленчукот да омекне целосно и вкусовите да се соединат. Потоа додадете го наутот, а последно брокулата. Измешајте и пржете многу кратко, брокулата да остане крцкава. На крај додадете сол, кари и црвен бибер."
+    ]
+  },
+  {
+    id: 38,
+    name: "ПИТА ОД ТИКВИЧКИ СО ФИЛ ОД ЗЕЛЕНЧУЦИ",
+    image: "images/ПИТА_ОД_ТИКВИЧКИ_СО_ФИЛ_ОД_ЗЕЛЕНЧУЦИ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "За подготовка на питата измешајте ги сите состојки заедно.",
+    ingredients: [
+      "1 тиквичка (изрендана и добро исцедена од водата)",
+      "2 јајца",
+      "2 лажици овесни снегулки",
+      "2 лажици пченично интегрално брашно (може било какво)",
+      "3 лажици маслиново масло",
+      "2 лажици грчки јогурт (или павлака)",
+      "доматно пире (или некој друг здрав намаз пример хумус)",
+      "пола модар домат (насечкан на тенки парченца)",
+      "4-5 домати (чери - исто насечкани на мали парченца)",
+      "4-5 маслинки (насечкани на ситно)",
+      "80 g кашкавал (изрендан - јас користев гауда)"
+    ],
+    instructions: [
+      "За подготовка на питата измешајте ги сите состојки заедно.",
+      "Прво убаво исцедете ја тиквицата од вишокот вода. Можете да ја посолите и да ја оставите 10-тина минути. Така полесно ќе ја ослободи водата, потоа со раце изгмечете ја преку цедалка за да истече сé.",
+      "Печете ја питата во загреана рерна на 180℃ околу 15-20 минути. Јас користев сад со дијаметар 24 cm. Може да користите каков било, ако не е силиконски ставете задолжително хартија за печење.",
+      "Кога ќе се испече извадете ја и премачкајте со намазот што сте го одбрале и наредете го зеленчукот (како на сликата).",
+      "Последно, ставете го кашкавалот и вратете во рерна уште 10-тина минути.",
+      "Извадете, насечете на парчиња и уживајте во вкусовите!",
+      "Ние ја комбиниравме со свежа салата од марула, рукола и краставица."
+    ]
+  },
+  {
+    id: 39,
+    name: "САЛАТА СО ПИЛЕШКО И ЗАПЕЧЕНИ ПЕЧУРКИ И МОРКОВИ",
+    image: "images/САЛАТА_СО_ПИЛЕШКО_И_ЗАПЕЧЕНИ_ПЕЧУРКИ_И_МОРКОВИ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Подготовката на овој брз ручек е уште полесна доколку месото ви е подготвено претходно. Можете во недела да си сварите месо кое ќе го вакуумирате во теглички и ќе имате да го искористите во неколку опции за ручек или вечера.",
+    ingredients: [
+      "100 g пилешко месо (варено)",
+      "10 печурки",
+      "1 морков (поголем)",
+      "зелена салата (свежа) (по избор марула, зелка, рукола...)",
+      "2 лажици кикиритки (несолени, но печени)",
+      "1 лажица маслиново масло",
+      "1 лажица сок од лимон",
+      "сол",
+      "кари",
+      "оригано"
+    ],
+    instructions: [
+      "Подготовката на овој брз ручек е уште полесна доколку месото ви е подготвено претходно. Можете во недела да си сварите месо кое ќе го вакуумирате во теглички и ќе имате да го искористите во неколку опции за ручек или вечера.",
+      "Печурките и морковот ги запржувате кратко на грил тава со маслиновото масло. Кога ќе заруменат малку додадете им сол и тргнете ги на страна.",
+      "Во длабока чинија ставете ја свежата салата, потоа ставете го пилешкото насечкано на ситно и на крај печурките, морковот и кикиритките. Додадете сол и зачини и напрскајте со сок од лимон."
+    ]
+  },
+  {
+    id: 40,
+    name: "ПРОТЕИНСКА САЛАТА СО СЛАДОК КОМПИР И ПИЛЕШКО",
+    image: "images/ПРОТЕИНСКА_САЛАТА_СО_СЛАДОК_КОМПИР_И_ПИЛЕШКО.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин пилешкото месо насечете го на ситни парченца и посолете го со малку сол и со 1 лажичка сенф.",
+    ingredients: [
+      "350 g пилешки стек (ова е количина мерена пред готвење)",
+      "1 мала лажичка сенф",
+      "2 слатки компири (околу 300 g)",
+      "2 лажици маслиново масло",
+      "зачини: сол, кари и црвен бибер",
+      "зелена салата (свежа) (изберете по ваш избор, може марула/рукола со краставица и домати)",
+      "1 лажица сок од лимон (или малку балсамико)",
+      "1 лажица семки од тиква"
+    ],
+    instructions: [
+      "Најпрвин пилешкото месо насечете го на ситни парченца и посолете го со малку сол и со 1 лажичка сенф.",
+      "Потоа во тавче ставете 1 лажица маслиново масло и ставете го месото да се запржи. Бидејќи е на ситни парченца, ќе биде многу брзо готово. Ќе видите кога ќе зарумени.",
+      "Потоа насечете го слаткиот компир на коцки, а настрана измешајте 1 лажица маслиново со малку сол, црвен бибер и кари. Потоа истурете го сосот со зачини врз компирите и убаво соединете. Ставете ги да се печат во загреана рерна на 180С околу 15-тина минути.",
+      "На крај измешајте ја салатата со пилешкото и испечените компири и додадете одозгора малку сок од лимон или баласамико, а по желба ставете уште малку сол.",
+      "Одозгора последно додадете и 1 лажица семки од тиква.",
+      "Салатата е неверојатно вкусна, со висока содржина на протеини, но и со совршен баланс од сите други нутриенти.",
+      "Дефинитивно кај нас ќе биде во редовно мени :)"
+    ]
+  },
+  {
+    id: 41,
+    name: "ИНТЕГРАЛНИ ТЕСТЕНИНИ СО ЗЕЛЕНЧУК И СИРЕЊЕ",
+    image: "images/ИНТЕГРАЛНИ_ТЕСТЕНИНИ_СО_ЗЕЛЕНЧУК_И_СИРЕЊЕ.jpg",
+    category: "lunch",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Сварете ги тестенините во вода на стандарден начин и тргнете ги на страна.",
+    ingredients: [
+      "180 g тестенини",
+      "1 тиквичка",
+      "1 морков",
+      "домат (суви во маслиново масло, по желба)",
+      "6 маслинки",
+      "200 g брокула",
+      "150 g грчки јогурт (едно канче)",
+      "1 лажици сенф",
+      "50 g сирење (или кашкавал)",
+      "сол",
+      "зачин по желба",
+      "3 лажици маслиново масло",
+      "20 g ореви (мелени, или некои други јатки)"
+    ],
+    instructions: [
+      "Сварете ги тестенините во вода на стандарден начин и тргнете ги на страна.",
+      "Во тавче што не лепи насечкајте ги ситно морковот и тиквичката и заедно со маслиновото масло кратко пржете ги. Кога ќе омекнат додадете ги ситно насечканите маслинки, сувите домати (ако користите) и брокулата на ситни гранчиња (претходно кратко можете да ја обарите или само да ја прелеете со топла вода). Оставете неколку минути да се динста и потоа тргнете од оган. Додадете сол и зачини по желба и измешајте го зеленчукот со сварените тестенини.",
+      "Во друг сад измешајте едно канче грчки јогурт заедно со 1 лажица сенф и ставете го преливот врз тестенините. Измешајте повторно и одозгора изрендајте 50 g сирење или пак кашкавал и наросете со мелени јатки (јас користев ореви)."
+    ]
+  },
+  {
+    id: 42,
+    name: "КРЕМ СУПА ОД ТИКВА И ЗЕЛЕНЧУЦИ",
+    image: "images/КРЕМ_СУПА_ОД_ТИКВА_И_ЗЕЛЕНЧУЦИ.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Зеленчукот насечете го на коцки и ставате го на хартија за печење во соодветен плех. Попрскајте го одозгора со маслиновото масло и со малку сол и печете го во добро загреана рерна околу 30 минути на температура од 160-170С.",
+    ingredients: [
+      "400 g тиква (мерена пред печење)",
+      "1 домат (може да се стави и доматно пире)",
+      "1 морков",
+      "2 главици кромид",
+      "1 тиквица (опционална е, не мора да ја ставате)",
+      "2-3 лажици маслиново масло",
+      "1 мала лажичка сол хималајска (по потреба)",
+      "зачин по желба (јас ставив црн бибер, магдонос и лук)",
+      "600-700 ml вода",
+      "100 g наут (од тегла) (јас користев за да го дополнам оброкот - не е неопходен, наутот е опционален додаток)"
+    ],
+    instructions: [
+      "Зеленчукот насечете го на коцки и ставате го на хартија за печење во соодветен плех. Попрскајте го одозгора со маслиновото масло и со малку сол и печете го во добро загреана рерна околу 30 минути на температура од 160-170С.",
+      "Потоа извадете го и почекајте малку да се залади затоа што треба да го блендирате ама да не му направите \"шок\" на блендерот со многу жешка смеса.",
+      "Префрлете го зеленчукот во блендерот и додадете млака вода околу 600 ml (по потреба можете да додадете и повеќе вода, ќе видите во зависност од густината). Изблендирајте убаво и префрлете ја супата во тенџере и оставете ја да се загрее. Додадете уште малку сол и зачини по ваша желба. Јас ставив црн бибер, магдонос и лукче.",
+      "За супата да биде комплетен оброк, јас додадов 100 g зрна наут од тегла по порција.",
+      "Ги процедив од водата и ги зачинив со малку сол и црн бибер. Можете со малку маслиново масло да ги запечете во рерна или да ги запржите за да бидат крцкави.",
+      "Ставете од супата во чинија, па потоа додадете ги и зрната наут."
+    ]
+  },
+  {
+    id: 43,
+    name: "ПАЛАЧИНКИ ОД ЈАЈЦА И МОРКОВ",
+    image: "images/ПАЛАЧИНКИ_ОД_ЈАЈЦА_И_МОРКОВ.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Изрендајте го морковот и кашкавалот, а потоа додадете ги јајцата и изматете сѐ заедно. Пржете ги палачинките на стандарден начин во тава во која ќе додадете 1 мала лажичка маслиново масло.",
+    ingredients: [
+      "2 јајца",
+      "1 морков",
+      "30 g кашкавал (гауда)",
+      "1 мала лажичка маслиново масло",
+      "1 лажица хумус",
+      "марула",
+      "пола краставица"
+    ],
+    instructions: [
+      "Изрендајте го морковот и кашкавалот, а потоа додадете ги јајцата и изматете сѐ заедно. Пржете ги палачинките на стандарден начин во тава во која ќе додадете 1 мала лажичка маслиново масло.",
+      "На крај ставете врз секој палачинка малку хумус, лист марула и кругови краставица. Можете да користите и друг намаз."
+    ]
+  },
+  {
+    id: 44,
+    name: "ПИЦА ВО ТАВА",
+    image: "images/ПИЦА_ВО_ТАВА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрво, изматете ги јајцата заедно со овесните снегулки, прашокот за печиво и солта. Оставете ја смесата да отстои 5–10 минути за овесните снегулки да впијат дел од влагата.",
+    ingredients: [
+      "2 јајца",
+      "3 лажици овесни снегулки",
+      "прашок за печиво (многу малку)",
+      "маслиново масло (неколку капки за да се намачка тавата)",
+      "2 лажици доматен сос",
+      "1 пиперка (црвена)",
+      "1 домат (или неколку чери домати)",
+      "3-4 маслинки",
+      "40 g кашкавал (гауда)",
+      "сол и малку оригано"
+    ],
+    instructions: [
+      "Најпрво, изматете ги јајцата заедно со овесните снегулки, прашокот за печиво и солта. Оставете ја смесата да отстои 5–10 минути за овесните снегулки да впијат дел од влагата.",
+      "Во меѓувреме, премачкајте ја тавата со неколку капки масло и оставете ја да се загрее. Кога ќе се загрее добро, истурете ја смесата и рамномерно распоредете ја по целата површина.",
+      "Печете кратко од едната страна, па внимателно свртете ја и намалете ја температурата на шпоретот за да не изгори. Потоа ставете го прво доматниот сос, па додадете го зеленчукот, а на крај изренданата гауда. Посипете одозгора по желба со оригано.",
+      "Поклопете ја тавата и оставете ја на тивок оган околу 3 минути, потребно е кашкавалот да се стопи. Зеленчукот ќе остане малку крцкав, што му дава свежина на целиот оброк.",
+      "И тоа е тоа, вашата пица од тава е подготвена! Оброк кој е одлично избалансиран и супер за било кој дел од денот."
+    ]
+  },
+  {
+    id: 45,
+    name: "ПОТПЕЧЕНИ ТИКВИЦИ",
+    image: "images/ПОТПЕЧЕНИ_ТИКВИЦИ.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Насечете ги тиквичките на подолги правоаголни парчиња (околу 10 cm). Посолете ги и оставете ги 10-тина минути на кујнска хартија за да го впие вишокот влага.",
+    ingredients: [
+      "1 тиквица (голема)",
+      "2 јајца",
+      "100 g интегрално брашно (може и бело, па дури и мелени овесни снегулки)",
+      "80 g кашкавал (изрендан)",
+      "сол (малку)"
+    ],
+    instructions: [
+      "Насечете ги тиквичките на подолги правоаголни парчиња (околу 10 cm). Посолете ги и оставете ги 10-тина минути на кујнска хартија за да го впие вишокот влага.",
+      "Потоа подгответе три сада:",
+      "– во првиот сад изматете ги јајцата,",
+      "– во вториот ставете брашно,",
+      "– во третиот рендан кашкавал.",
+      "Секое парче тиквичка поминете го прво во брашно, потоа во јајцата, и на крај ставете го на хартија за печење. Одозгора посипете со малку кашкавал.",
+      "Ставете ги тиквичките во загреана рерна на 180°C и печете ги околу 10–15 минути. Следете го печењето затоа што секоја рерна е различна.",
+      "На крај поделете ја количината на 4 порции. Во секоја порција додадете:",
+      "– 1 свеж домат,",
+      "– 1 до 2 лажици грчки јогурт,",
+      "– 1 парче интегрален леб.",
+      "Добивате вкусен, балансиран и лесен летен оброк"
+    ]
+  },
+  {
+    id: 46,
+    name: "ПРОТЕИНСКА ПИЦА СО ЛЕЌА И ТИКВИЦА",
+    image: "images/ПРОТЕИНСКА_ПИЦА_СО_ЛЕЌА_И_ТИКВИЦА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Ставете ја леќата да се кисне во вода барем два часа. Потоа фрлете ја водата (можете дури и да ја измиете преку цедалка) и ставете ја во блендер со 100-120 ml вода, 1 лажица маслиново масло и малку сол.",
+    ingredients: [
+      "200 g црвена леќа (мерена пред киснење - се кисне во вода минимум 2 часа)",
+      "1 лажица маслиново масло",
+      "100-120 ml вода",
+      "сол (малку)",
+      "2-3 лажици доматен сос (да ја премачкате кората од леќа)",
+      "1 тиквица (изрендана и исцедена од водата)",
+      "3 јајца",
+      "100 g кашкавал",
+      "2 лажици семки од тиква"
+    ],
+    instructions: [
+      "Ставете ја леќата да се кисне во вода барем два часа. Потоа фрлете ја водата (можете дури и да ја измиете преку цедалка) и ставете ја во блендер со 100-120 ml вода, 1 лажица маслиново масло и малку сол.",
+      "Ќе добиете течна смеса налик на смеса на палачинки. Погледнете го видеото од пицата со леќа за да ја видите смесата, зошто долниот слој од леќа е ист.",
+      "Задолжително користете хартија за печење за да ја извадите на крај полесно. Во однос на големина на плехче, јас го користев најголемиот што ми идеше заедно кога го купивме шпоретот. Некако кога е потенка ми е поубава.",
+      "Ставете го овој прв слој во загреана рерна на 180℃ и печете 7-8 минути, а во меѓувреме подгответе го слојот со тиквичка.",
+      "Изрендајте ја и исцедете ја тиквицата од вода, не мора целосно ама да фрлите дел од водата. Потоа во неа додадете 3 јајца и убаво измешајте. Можете да додадете и малку сол.",
+      "Врз кората од леќа ставете малку доматно пире, а потоа истурете го филот со тиквица. Вратете во рерна и печете 10-тина минути. Ќе видите кога ќе се формира кора и кога јајцето е испечено. На крај извадете и последно додадете го изренданиот кашкавал и семките од тиква. Јас користев мелени семки.",
+      "Печете со кашкавалот уште некоја минутка додека тој се стопи.",
+      "Поделете ја пицата на три дела и сервирајте. Задолжително комбинирајте го оброкот со свежа сезонска салата."
+    ]
+  },
+  {
+    id: 47,
+    name: "СЕНДВИЧ СО ТУНА",
+    image: "images/СЕНДВИЧ_СО_ТУНА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Комбинација што држи ситост, а се прави буквално за 5 минути. Совршен избор кога сакате лесен, но хранлив оброк. Наместо интегрално лепче, можете да користите и тортиља.",
+    ingredients: [
+      "2 парчиња интегрален леб",
+      "туна (мала)",
+      "1 лажица грчки јогурт",
+      "1 мала лажичка сенф",
+      "сок од лимон (малку)",
+      "3-4 маслинки (ситно насечкани)",
+      "марула (1-2 листа)"
+    ],
+    instructions: [
+      "Комбинација што држи ситост, а се прави буквално за 5 минути. Совршен избор кога сакате лесен, но хранлив оброк. Наместо интегрално лепче, можете да користите и тортиља.",
+      "Измешајте ја туната посебно со ситно исечканите маслинки, 1 лажица грчки јогурт, малку сенф и сок од лимон. Потоа на лепчето ставете ја туната и ставете 1–2 листа марула, па затворете го сендвичот.",
+      "Мислам дека и 5 минути се многу за овој оброк кој содржи совршен баланс на макронутриенти, a ќе ве држи сити подолго време."
+    ]
+  },
+  {
+    id: 48,
+    name: "СУПА ОД ЛЕЌА",
+    image: "images/СУПА_ОД_ЛЕЌА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Леќата е одлична мешунка со голем процент на протеини во својот состав. Во 100 g леќа има околу 25 g на протеини.",
+    ingredients: [
+      "200 g црвена леќа (сирова)",
+      "750 ml вода",
+      "1 кромид",
+      "1 морков",
+      "2 лажици маслиново масло",
+      "сол",
+      "куркума",
+      "црвен бибер",
+      "нане"
+    ],
+    instructions: [
+      "Леќата е одлична мешунка со голем процент на протеини во својот состав. Во 100 g леќа има околу 25 g на протеини.",
+      "Оваа супа е супер нутритивна, лесна и брза за подготовка.",
+      "Пред да ја правите супата добро е леќата да биде покисната во вода, барем 3-4 часа. Фрлете ја водата во која се киснела и додадете нова вода. Ставете го кромидот и морковот и почекајте да зоврие. Кога ќе зоврие намалете на тивко и оставете додека зрната омекнат. Кога ќе омекнат зрната со рачен блендер изблендирајте ја целата содржина. Ќе добиете густа супа. Додадете во супата 2 лажици маслиново масло и зачини.",
+      "Комбинирајте со свежа салата по избор."
+    ]
+  },
+  {
+    id: 49,
+    name: "ВРАП СО ПИЛЕШКО",
+    image: "images/ВРАП_СО_ПИЛЕШКО.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Месото насечете го на ситни коцки и зачинете го со солта, нането и буковецот. Ставете го да се готви со маслиновото масло во тавче и пржете го додека целосно не ја смени бојата. Потребни му се околу 10-тина минути максимум.",
+    ingredients: [
+      "250 g пилешки стек (мерен пред готвење)",
+      "1 лажица маслиново масло",
+      "сол, нане и буковец (по вкус)",
+      "150 g грчки јогурт (цело канче)",
+      "3 кисели краставички",
+      "1 мала лажичка сенф",
+      "зеленчук по желба (јас користев спанаќ и морков)",
+      "2 интегрални тортиљи"
+    ],
+    instructions: [
+      "Месото насечете го на ситни коцки и зачинете го со солта, нането и буковецот. Ставете го да се готви со маслиновото масло во тавче и пржете го додека целосно не ја смени бојата. Потребни му се околу 10-тина минути максимум.",
+      "Во меѓувреме измешајте ги заедно грчкиот јогурт, сенфот и во нив додадете ги киселите краставички кои ќе ги изрендате.",
+      "Кога месото ќе биде готово тргнете го од оган и почекајте по барем 5 минути малку да се олади.",
+      "На крај измешајте го со сосот од грчки јогурт заедно со месото.",
+      "Поделете на две половини и наполнете ги тортиљите, ставете зеленчук по желба и замоткајте. Запечете ги кратко враповите од двете страни во тавче и уживајте во оброкот.",
+      "Доколку сакате повеќе растителни влакна, подгответе си на страна посебно повеќе салата."
+    ]
+  },
+  {
+    id: 50,
+    name: "ВРАП СО САЛАТА",
+    image: "images/ВРАП_СО_САЛАТА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Салатата измешајте ја во подлабок сад и во неа додадете го доматот насечкан на ситни коцки, потоа изрендајте го кашкавалот и ставете ги маслинките исто така насечени на ситно.",
+    ingredients: [
+      "зелена салата (свежа) (марула / рукола)",
+      "пола домат (по желба може и краставица)",
+      "3 маслинки",
+      "30 g кашкавал",
+      "2 лажици грчки јогурт",
+      "1 мала лажичка сенф",
+      "пола мала лажичка мед",
+      "сол (малку)",
+      "1 лажица бадем (мелено)",
+      "1 интегрална тортиља"
+    ],
+    instructions: [
+      "Салатата измешајте ја во подлабок сад и во неа додадете го доматот насечкан на ситни коцки, потоа изрендајте го кашкавалот и ставете ги маслинките исто така насечени на ситно.",
+      "Во друг помал сад измешајте го грчкиот јогурт заедно со сенфот и медот.",
+      "Потоа измешајте сѐ заедно и одозгора додадете ги мелените бадеми и малку посолете.",
+      "Наполнете ја тортиљата со салата и замотајте. Можете кратко да ја запечете на тавче или пак во рерна или микробранова.",
+      "Уживајте!"
+    ]
+  },
+  {
+    id: 51,
+    name: "ЌОФТИЊА ОД ТИКВИЦА",
+    image: "images/ЌОФТИЊА_ОД_ТИКВИЦА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Тиквицата прво ја лупиме, ја рендаме и ја исцедуваме од вишокот вода. Потоа ги рендаме морковите и ги додаваме во истата смеса. Во таа смеса ги ставаме јајцата, изренданото фета сирење, брашното, маслиновото масло и малку пециво, па сè убаво соединуваме додека да добиеме мека, леплива смеса. Со лажица земаме од смесата и формираме кружни ќофтенца директно на плех обложен со хартија за печење. Од оваа количина излегуваат околу 12 ќофтенца. Се печат во загреана рерна на 180°C околу 15–17 минути или додека убаво не заруменат и не станат цврсти. Јас ги печам со вклучен вентилатор, но времето може да варира, затоа следете го печењето. Готовите кюфтенца можете да ги комбинирате со свежа салата или да си направите вкусен сендвич со интегрално лепче, намаз од крем сир или грчки јогурт, и да додадете свеж домат, пиперка или лист марула.",
+    ingredients: [
+      "1 тиквица",
+      "2 моркови",
+      "2 јајца",
+      "прашок за пециво (малку)",
+      "70 g сирење (фета)",
+      "2 лажици сенаменско брашно",
+      "1 лажица маслиново масло"
+    ],
+    instructions: [
+      "Тиквицата прво ја лупиме, ја рендаме и ја исцедуваме од вишокот вода. Потоа ги рендаме морковите и ги додаваме во истата смеса. Во таа смеса ги ставаме јајцата, изренданото фета сирење, брашното, маслиновото масло и малку пециво, па сè убаво соединуваме додека да добиеме мека, леплива смеса. Со лажица земаме од смесата и формираме кружни ќофтенца директно на плех обложен со хартија за печење. Од оваа количина излегуваат околу 12 ќофтенца. Се печат во загреана рерна на 180°C околу 15–17 минути или додека убаво не заруменат и не станат цврсти. Јас ги печам со вклучен вентилатор, но времето може да варира, затоа следете го печењето. Готовите кюфтенца можете да ги комбинирате со свежа салата или да си направите вкусен сендвич со интегрално лепче, намаз од крем сир или грчки јогурт, и да додадете свеж домат, пиперка или лист марула."
+    ]
+  },
+  {
+    id: 52,
+    name: "ЌОФТИЊА СО ДОМАТЕН СОС И ТЕСТЕНИНИ",
+    image: "images/ЌОФТИЊА_СО_ДОМАТЕН_СОС_И_ТЕСТЕНИНИ.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Ова е уште еден од оние рецепти што верувам дека сите сте го правеле барем еднаш. Нема ништо „иновативно“ во него, но токму тука е поентата. Целта ми е и кај ваквите традиционални јадења да ви го свртам вниманието кон количината и начинот на подготовка. Малите промени прават голема разлика.",
+    ingredients: [
+      "400 g мелено месо (мешано свинско и телешко, или по избор)",
+      "1 главица кромид (рендана)",
+      "1 јајце",
+      "2 лажици овесни снегулки",
+      "сол",
+      "црн бибер",
+      "лук (по желба)",
+      "240 g макарони (60 g по порција)",
+      "2 домати",
+      "1/2 главица кромид",
+      "1 морков",
+      "1 лажица маслиново масло",
+      "сол",
+      "оригано",
+      "1 мала лажичка сенф"
+    ],
+    instructions: [
+      "Ова е уште еден од оние рецепти што верувам дека сите сте го правеле барем еднаш. Нема ништо „иновативно“ во него, но токму тука е поентата. Целта ми е и кај ваквите традиционални јадења да ви го свртам вниманието кон количината и начинот на подготовка. Малите промени прават голема разлика.",
+      "Ќофтињата наместо да ги пржиме, ги печеме. Макароните ги мериме, затоа што тука најчесто несвесно претеруваме.",
+      "Оптимална количина на тестенини е околу 60 g по порција, максимум до 80 g, што е сосема доволно како извор на јаглехидрати во оброк.",
+      "Во комбинација со протеинот од месото и зеленчукот, добивате комплетен, избалансиран оброк кој е вкусен, заситувачки и нема да ве прејаде.",
+      "Баш она што ни треба, традиционално, вкусно, а сепак одлично избалансирано",
+      "Во сад измешајте го меленото месо со кромидот, јајцето, овесните снегулки и зачините.",
+      "Оставете ја смесата неколку минути за овесот да ја впие влагата.",
+      "Со лажица и рака формирајте мали ќофтиња и редете ги на хартија за печење. Печете во air fryer или во рерна на 180°C околу 15–20 минути. Не додавајте масло, месото си има доволно маснотија и убаво ќе се испече.",
+      "Во меѓувреме сварете ги макароните.",
+      "За доматниот сос, изблендирајте ги доматите, кромидот и морковот.",
+      "Смесата ставете ја во тава, додадете маслиново масло, сол и оригано и оставете да се вари на тивок оган додека се згусне. На крај додадете една лажичка сенф за вкус.",
+      "Доколу имате доматен сос во тегла можете да си го искоритите и него, стоплете го само и зачинете си го по ваш вкус.",
+      "Послужете ги макароните со доматниот сос и ќофтињата одозгора. Јас дополнително сервирав со салата од зелка, морков, марула и краставица.",
+      "Знам дека ќе уживате. На здравје."
+    ]
+  },
+  {
+    id: 53,
+    name: "ВРАП СО НАМАЗ ОД ЈАЈЦЕ",
+    image: "images/ВРАП_СО_НАМАЗ_ОД_ЈАЈЦЕ.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрво јајцето изрендајте го и измешајте го со грчкиот јогурт.",
+    ingredients: [
+      "1 интегрална тортиља",
+      "1 јајце (варено)",
+      "1 лажица грчки јогурт (полна)",
+      "краставица (неколку ленти - ги правам со алатката за лупење)",
+      "морков (неколку ленти)",
+      "марула (1-3 листови)",
+      "1/4 авокадо"
+    ],
+    instructions: [
+      "Најпрво јајцето изрендајте го и измешајте го со грчкиот јогурт.",
+      "Потоа премачкајте ја тортиљата со намазот и врз него ставете ја марулата и другите зеленчуци.",
+      "Завиткајте и кратко запечете во тава и од двете страни. Исечете на половина и послужете.",
+      "Ова е одличен предлог за брз оброк, особено за вечера или појадок, но може да биде и супер опција за мезе доколку направите неколку врапови и ги пресечете на половина."
+    ]
+  },
+  {
+    id: 54,
+    name: "ГИБАНИЦА СО КОРИ ОД ХЕЉДА",
+    image: "images/ГИБАНИЦА_СО_КОРИ_ОД_ХЕЉДА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Во длабок сад измешајте ги заедно јајцата, киселата вода, јогуртот, сирењето, пецивото и маслиновото масло.",
+    ingredients: [
+      "4 јајца",
+      "200 ml кисела вода",
+      "100 ml јогурт",
+      "50 g сирење",
+      "1 мала лажичка прашок за пециво",
+      "3 лажици маслиново масло",
+      "500 g кори од хељда",
+      "1 лажица маслиново масло (дополнително, за да ја прелиете целата пита)",
+      "50 ml кисела вода (дополнително, за да ја прелиете целата пита)"
+    ],
+    instructions: [
+      "Во длабок сад измешајте ги заедно јајцата, киселата вода, јогуртот, сирењето, пецивото и маслиновото масло.",
+      "Во садот во кој ќе ја правите питата ставете прво 2-3 кори со тоа што ќе оставите дел од корите од надвор за да можете на крај да ја затворите питата. Секоја од останатите кори валкајте ја во смесата од јајца и сирење и ставајте ја во плехот. Не треба да ги моткате корите, едноставно извалкајте и како ќе ви дојде така редете ги во плехот. На крај затворете ја питата со крајчињата од првите кори и попрскајте одозгора со киселата вода и маслиновото масло.",
+      "Печете ја питата во загреана рерна на температура од 170℃ околу 25 минути."
+    ]
+  },
+  {
+    id: 55,
+    name: "МАФИНИ СО ПАЛЕНТА И ТИКВИЦА",
+    image: "images/МАФИНИ_СО_ПАЛЕНТА_И_ТИКВИЦА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин со миксер изматете ги јајцата, потоа во смесата со јајцата додадете сѐ друго. Тиквицата не ја цедев од водата затоа што треба влага која ќе ја впијат овесните снегулки и палентата.",
+    ingredients: [
+      "4 јајца",
+      "1 тиквица (изрендана)",
+      "120 g палента",
+      "120 g овесни снегулки",
+      "200 g урда (јас ја користев Homolje од Кам, но може наместо неа да ставите 100 g фета сирење)",
+      "2 лажици чиа семе",
+      "прашок за пециво (малку)",
+      "сол (по потреба)",
+      "сусам (за наросување за одозгора)"
+    ],
+    instructions: [
+      "Најпрвин со миксер изматете ги јајцата, потоа во смесата со јајцата додадете сѐ друго. Тиквицата не ја цедев од водата затоа што треба влага која ќе ја впијат овесните снегулки и палентата.",
+      "Мафините ги печев 20-тина минути на 160-170C, но пред да ги ставам рерната ми беше загреана на 220C и штом ги ставив веднаш намалив.",
+      "Можете да ги комбинирате со грчки јогурт и зеленчук или пак со некој намаз. Јас ги јадев со домашен ајвар и малку околу 30-тина g фета сирење."
+    ]
+  },
+  {
+    id: 56,
+    name: "ПИЦА НА ТОРТИЉА",
+    image: "images/ПИЦА_НА_ТОРТИЉА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Врз тортиљата ставете го доматното пире и наросете малку оригано. Потоа целиот зеленчук насечкан на посакувани форми наредете го на тортиљата. На крај ставете го кашкавалот и печете во загреана рерна на 180°С околу 5-7 минути.",
+    ingredients: [
+      "1 интегрална тортиља",
+      "пола морков",
+      "пола тиквичка",
+      "3-4 шампињони",
+      "50 g брокула (кратко обарена)",
+      "1 лажица пченка",
+      "2 маслинки",
+      "30 g кашкавал (рендан)",
+      "1 лажица доматно пире",
+      "оригано"
+    ],
+    instructions: [
+      "Врз тортиљата ставете го доматното пире и наросете малку оригано. Потоа целиот зеленчук насечкан на посакувани форми наредете го на тортиљата. На крај ставете го кашкавалот и печете во загреана рерна на 180°С околу 5-7 минути."
+    ]
+  },
+  {
+    id: 57,
+    name: "ПРОЛЕТНА САЛАТА СО РУКОЛА И ЈАГОДИ",
+    image: "images/ПРОЛЕТНА_САЛАТА_СО_РУКОЛА_И_ЈАГОДИ.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Измешајте го зеленчукот во поголема чинија. Одозгора додадете ги јагодите, оревите и сирењето. На крај, зачинете со маслиново масло, малку сол и балсамико оцет или свежо цеден сок од лимон.",
+    ingredients: [
+      "рукола",
+      "1 краставица",
+      "1 морков",
+      "100 g јагоди",
+      "30 g сирење (фета)",
+      "25 g ореви (може и други јатки)",
+      "прелив за салатата: 1 лажица маслиново масло, малку балсамико оцет и сол"
+    ],
+    instructions: [
+      "Измешајте го зеленчукот во поголема чинија. Одозгора додадете ги јагодите, оревите и сирењето. На крај, зачинете со маслиново масло, малку сол и балсамико оцет или свежо цеден сок од лимон."
+    ]
+  },
+  {
+    id: 58,
+    name: "СЕНДВИЧ СО ПИЛЕШКО И ТИКВИЦА",
+    image: "images/СЕНДВИЧ_СО_ПИЛЕШКО_И_ТИКВИЦА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Последно време некако се навлеков на различни варијанти на сендвичи. Брзи се за подготовка, можете да ги земете со вас било каде, а и навистина може секој ден да ги правите различни.",
+    ingredients: [
+      "120 g пилешки стек (ова е количина мерена пред готвење)",
+      "1/4 тиквица (на ленти)",
+      "1 лажица хумус (може и друг намаз)",
+      "2 парчиња интегрален леб",
+      "1/2 домат (насечен на кругови)",
+      "1/2 краставица (насечена на ленти)",
+      "сол (за месото)",
+      "1 мала лажичка маслиново масло (за месото)"
+    ],
+    instructions: [
+      "Последно време некако се навлеков на различни варијанти на сендвичи. Брзи се за подготовка, можете да ги земете со вас било каде, а и навистина може секој ден да ги правите различни.",
+      "За подготовката на овој вкусен, но и протеински сендвич ќе ви требаат 10 минути.",
+      "Пилешкото месо малку посолете го и со малку маслиново масло ставете го во тава да се испржи. Јас парчето ќе пресеков по должина за да биде потенко и полесно и побрзо да се зготви. Можете ако имате опција да купите од негде и веќе подготвен/печен стек.",
+      "Кога месото ќе биде готово во тавата ставете неколку ленти тиквица, ги сечев со алатката со која лупам компири и краставици.",
+      "Пред да ги извадите кога ќе омекнат посолете ги, а додека го спремате другиот дел ставете ги на кујнска хартија затоа што ќе пуштат малку вода, па да се впие да не ви биде воден сендвичот.",
+      "Лепчињата ги ставив малку да се затоплат во тавата во која ги правев и месото и тиквицата. Потоа ставате врз лепчето лажица хумус, може и некој друг намаз, јас го користев намазот од манго и папаја од ДМ, па го ставате месото, тиквиците, 2-3 круга домат и краставица. И краставицата ја направив на ленти со алатката за лупење.",
+      "Сендвичот е фантазија :)) пробајте го, ќе сакате да го правите често."
+    ]
+  },
+  {
+    id: 59,
+    name: "СПАНАЌ ПИТА",
+    image: "images/СПАНАЌ_ПИТА.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Спанаќот првин кратко обарете го, па поминете го со ладна вода и насечете го ситно. Потоа префрлете го во длабок сад и додадете ги јајцата, сирењето (изрендано), маслинките (насечени на поситни парчиња) и овесните снегулки. Измешајте убаво додека смесата се соедини и истурете ја во плех на хартија за печење. Печете во загреана рерна околу 15-20 минути на температура од 180°C. Но, следете го печењето затоа што секоја рерна има различна моќност.",
+    ingredients: [
+      "300 g спанаќ",
+      "3 јајца",
+      "5-6 маслинки",
+      "50 g сирење (може да се замени со урда)",
+      "4-5 лажици овесни снегулки"
+    ],
+    instructions: [
+      "Спанаќот првин кратко обарете го, па поминете го со ладна вода и насечете го ситно. Потоа префрлете го во длабок сад и додадете ги јајцата, сирењето (изрендано), маслинките (насечени на поситни парчиња) и овесните снегулки. Измешајте убаво додека смесата се соедини и истурете ја во плех на хартија за печење. Печете во загреана рерна околу 15-20 минути на температура од 180°C. Но, следете го печењето затоа што секоја рерна има различна моќност.",
+      "3 парчиња или една третина од питата искомбинирајте ги со грчки јогурт, а може и некој друг намаз и свеж зеленчук по избор.",
+      "Ова е одличен оброк со помалку калории, а многу протеини. Оваа пита, иако е понискокалорична, ќе ве држи сити подолго време заради балансот во макронутриентите."
+    ]
+  },
+  {
+    id: 60,
+    name: "ЧОРБА СО ПЕЧУРКИ И ЗЕЛЕНЧУК",
+    image: "images/ЧОРБА_СО_ПЕЧУРКИ_И_ЗЕЛЕНЧУК.jpg",
+    category: "dinner",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Морковот, компирот и тиквичката изрендајте ги и заедно со водата ставете ги во тенџере да се варат. Во тавче на оган ставете го маслото и кратко запржете ги печурките (претходно исечкани на ленти или на посакувани форми). Динстајте ги додека не им излезе вишокот вода.",
+    ingredients: [
+      "2 моркови",
+      "1 компир",
+      "1 тиквичка",
+      "200 g печурки",
+      "2 лажици маслиново масло",
+      "700 ml вода",
+      "1 мала лажичка сол",
+      "зачин по желба",
+      "магдонос (свеж) (по желба)",
+      "сок од лимон (по желба)"
+    ],
+    instructions: [
+      "Морковот, компирот и тиквичката изрендајте ги и заедно со водата ставете ги во тенџере да се варат. Во тавче на оган ставете го маслото и кратко запржете ги печурките (претходно исечкани на ленти или на посакувани форми). Динстајте ги додека не им излезе вишокот вода.",
+      "Кога зеленчукот во тенџерето ќе омекне изблендирајте го со рачен блендер. Ќе добиете густа крем супа. Во супата додадете ги запржените печурки. На крај додадете сол, зачини по желба и сок од лимон."
+    ]
+  },
+  {
+    id: 61,
+    name: "ЗДРАВИ ТОФИФИ",
+    image: "images/ЗДРАВИ_ТОФИФИ.jpg",
+    category: "desserts",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Најпрвин ставете ги лешниците да се измелат во блендер/процесор. Но извадете околу 20-25 лешници затоа што ќе ви бидат потребни за да ставите внатре во секое топче.",
+    ingredients: [
+      "300 g лешници (може да ставите и мешавина од јатки)",
+      "240 g урми (јас користев меки урми од кутија)",
+      "50 g црно чоколадо",
+      "1 лажица кокосово масло"
+    ],
+    instructions: [
+      "Најпрвин ставете ги лешниците да се измелат во блендер/процесор. Но извадете околу 20-25 лешници затоа што ќе ви бидат потребни за да ставите внатре во секое топче.",
+      "Кога лешниците ќе се измелат додадете ги урмите. Јас користев меки урми од кутија и не ги киснев воопшто претходно. Блендирајте ги лешниците и урмите заедно неколку минути додека смесата убаво се соедини. Доколку смесата е многу густа можете да ставите 1-2 лажици растително млеко, јас не користев.",
+      "Со влажна рака формирајте бомбици/топчиња, на секое топче направете му дупче и во него ставете по едно лешниче.",
+      "Потоа во огноотпорен сад стопете го чоколадото со 1 лажица кокосово масло.",
+      "Во секое дупче со лешниче дополнете со чоколадо.",
+      "Оставете во фрижидер околу 1 час да се стегнат."
+    ]
+  },
+  {
+    id: 62,
+    name: "БРЗИ КОКОС-ЈОГУРТ БОМБИЦИ",
+    image: "images/БРЗИ_КОКОС-ЈОГУРТ_БОМБИЦИ.jpg",
+    category: "desserts",
+    prepTime: "",
+    difficulty: "Easy",
+    description: "Измешајте ги сите состојки заедно и формирајте топчиња. За овој десерт не ви треба ни бледер. Се подговува премногу брзо. На крај секое топче по желба валкајте го во кокос.",
+    ingredients: [
+      "150 g грчки јогурт (цело канче)",
+      "50 g кокосови трошки",
+      "2 лажици овесни снегулки",
+      "2 лажици мед",
+      "ванила (по вкус и потреба - не мора да ставате)"
+    ],
+    instructions: [
+      "Измешајте ги сите состојки заедно и формирајте топчиња. За овој десерт не ви треба ни бледер. Се подговува премногу брзо. На крај секое топче по желба валкајте го во кокос."
+    ]
+  }
+];
+
+
+// ================================================================
+// STATE
+// ================================================================
+let activeCat   = 'all';
+let searchQuery = '';
+
+// ================================================================
+// HELPERS
+// ================================================================
+const catMK = { breakfast: 'Појадок', lunch: 'Ручек', dinner: 'Вечера', desserts: 'Десерти' };
+function cap(cat) { return catMK[cat] || cat; }
+
+function getFiltered() {
+  const q = searchQuery.toLowerCase().trim();
+  return recipes.filter(r => {
+    const catOk = activeCat === 'all' || r.category === activeCat;
+    if (!catOk) return false;
+    if (!q)     return true;
+    return (
+      r.name.toLowerCase().includes(q) ||
+      r.description.toLowerCase().includes(q) ||
+      r.ingredients.some(i => i.toLowerCase().includes(q))
+    );
+  });
+}
+
+const clockSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+  stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+  aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+
+// ================================================================
+// RENDER GRID
+// ================================================================
+function renderGrid() {
+  const grid    = document.getElementById('grid');
+  const metaEl  = document.getElementById('results-meta');
+  const results = getFiltered();
+
+  metaEl.textContent = results.length === recipes.length
+    ? `${recipes.length} рецепти`
+    : `${results.length} од ${recipes.length} рецепти`;
+
+  if (results.length === 0) {
+    grid.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">ðŸ½ï¸</div>
+        <h3>Ништо не е пронајдено</h3>
+        <p>Обиди се со друг збор или промени категорија.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = results.map((r, i) => `
+    <article class="card" role="listitem" tabindex="0" data-id="${r.id}"
+             style="animation-delay:${i * 45}ms"
+             aria-label="Отвори рецепт: ${r.name}">
+      ${r.image
+        ? `<img class="card-img" src="${r.image}" alt="${r.name}" loading="lazy">`
+        : `<div class="card-no-img" aria-hidden="true">&#127859;</div>`}
+      <div class="card-badges">
+        <span class="badge badge-cat-${r.category}">${cap(r.category)}</span>
+        <span class="badge badge-diff-${r.difficulty.toLowerCase()}">${r.difficulty}</span>
+      </div>
+      <h3 class="card-title">${r.name}</h3>
+      <p class="card-desc">${r.description}</p>
+      <div class="card-footer">
+        ${clockSVG}
+        ${r.prepTime || 'Н/П'}
+      </div>
+    </article>
+  `).join('');
+
+  grid.querySelectorAll('.card').forEach(card => {
+    const open = () => openModal(Number(card.dataset.id));
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+  });
+}
+
+// ================================================================
+// MODAL
+// ================================================================
+function openModal(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+
+  document.getElementById('modal-title').textContent = r.name;
+
+  document.getElementById('modal-meta').innerHTML = `
+    <span class="badge badge-cat-${r.category}">${cap(r.category)}</span>
+    <span class="badge badge-diff-${r.difficulty.toLowerCase()}">${r.difficulty}</span>
+    <span class="modal-time">${clockSVG} ${r.prepTime}</span>
+  `;
+
+  document.getElementById('modal-body').innerHTML = `
+    ${r.image ? `<img class="modal-hero" src="${r.image}" alt="${r.name}">` : ''}
+
+    <h3 class="section-head">Состојки</h3>
+    <ul class="ingredients">
+      ${r.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+    </ul>
+
+    <h3 class="section-head">Подготовка</h3>
+    <ol class="instructions">
+      ${r.instructions.map((step, i) => `
+        <li>
+          <span class="step-num" aria-hidden="true">${i + 1}</span>
+          <span>${step}</span>
+        </li>`).join('')}
+    </ol>
+  `;
+
+  const overlay = document.getElementById('overlay');
+  const modal   = document.getElementById('modal');
+  overlay.classList.add('open');
+  modal.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modal-close').focus();
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ================================================================
+// EVENT LISTENERS
+// ================================================================
+document.getElementById('modal-close').addEventListener('click', closeModal);
+
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderGrid();
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeCat = btn.dataset.cat;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.toggle('active', b === btn);
+      b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+    });
+    renderGrid();
+  });
+});
+
+// ================================================================
+// INIT
+// ================================================================
+renderGrid();
+</script>
+</body>
+</html>
